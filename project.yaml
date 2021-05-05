@@ -1,0 +1,23 @@
+project_name: example-project
+short_name: ep
+
+primary_region: us-east-1
+secondary_region: us-west-2
+
+organization:
+  accounts:
+    management:
+      email: aws@example.com
+      id: 111111111111
+    security:
+      email: aws+security@example.com
+  organizational_units:
+  - name: security
+    accounts:
+    - security
+  - name: shared
+    accounts:
+    - shared
+
+execution:
+  enable_mfa: true
