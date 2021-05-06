@@ -1,8 +1,8 @@
 # Project settings
-PROJECT=ep
+PROJECT={{ short_name }}
 
 # General
-MFA_ENABLED=true
+MFA_ENABLED={{ execution.enable_mfa|default("true") }}
 
 # Terraform
 TERRAFORM_IMAGE_NAME=binbash/terraform-awscli-slim

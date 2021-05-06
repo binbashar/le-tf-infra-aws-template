@@ -1,18 +1,19 @@
 # Project (short name)
-project         = "ep"
+project         = "{{ short_name }}"
 
 # Project (long name)
-project_long    = "example-project"
+project_long    = "{{ project_name }}"
 
 # AWS Region for DR replication (required by the backend but also used for other resources)
-region_secondary      = "us-east-2"
+region_secondary      = "{{ secondary_region|default("us-east-2", true) }}"
 
 # Account IDs
-management_account_id = "XXXXXXXXXXXX" 
-security_account_id   = "XXXXXXXXXXXX" 
+{% for account_name, account_data in organization.accounts.items() %}
+{{ account_name }}_account_id = "{{ account_data.id|default("XXXXXXXXXXXX") }}"
+{% endfor %}
 
 # Hashicorp Vault private API endpoint
-vault_address = "https://ep-le-shared-vault-cluster.private.vault.XXXXXX.aws.hashicorp.cloud:8200"
+vault_address = "https://{{ short_name }}-le-shared-vault-cluster.private.vault.{{ vault_id|default("XXXXXX") }}.aws.hashicorp.cloud:8200"
 
 # Hashicorp Vault token
 #
@@ -34,4 +35,4 @@ vault_address = "https://ep-le-shared-vault-cluster.private.vault.XXXXXX.aws.has
 #   but it's use is defavoured for the nominated GH personal access token for
 #   security audit trail reasons
 
-vault_token = "s.XXXXXXXXXXXXXXXXXXXXXX.Apshc"
+vault_token = "s.{{ vault_token|default("XXXXXXXXXXXXXXXXXXXXXX") }}.Apshc"
