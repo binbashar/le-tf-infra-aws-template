@@ -1,5 +1,5 @@
-project_name: binbash
-short_name: bb
+project_name: leverage
+short_name: le
 
 primary_region: us-east-1
 secondary_region: us-west-2
@@ -7,12 +7,10 @@ secondary_region: us-west-2
 organization:
   accounts:
     management:
-      email: aws@binbash.com
+      email: aws@leverage.com
       id: 111111111111
     security:
-      email: aws+security@binbash.com
-    shared:
-      email: aws+shared@binbash.com
+      email: aws+security@leverage.com
   organizational_units:
   - name: security
     accounts:
@@ -20,9 +18,6 @@ organization:
   - name: shared
     accounts:
     - shared
-  
-users:
-  
 
 execution:
   enable_mfa: true

@@ -2,12 +2,12 @@
 # Organization accounts
 #
 resource "aws_organizations_account" "management" {
-  name  = "example-project-management"
-  email = "aws@example.com"
+  name  = "leverage-management"
+  email = "aws@leverage.com"
 }
 
 resource "aws_organizations_account" "security" {
-  name      = "example-project-security"
-  email     = "aws+security@example.com"
+  name      = "leverage-security"
+  email     = "aws+security@leverage.com"
   parent_id = aws_organizations_organizational_unit.security.id
 }
