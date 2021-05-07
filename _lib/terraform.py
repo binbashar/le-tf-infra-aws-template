@@ -23,7 +23,7 @@ if mfa_enabled:
     docker_entrypoint = env.get("TERRAFORM_MFA_ENTRYPOINT", docker_entrypoint)
 
 # Set docker image, workdir, and other default arguments
-docker_image = f"{env.get("TERRAFORM_IMAGE_NAME")}:{env.get("TERRAFORM_IMAGE_TAG")}"
+docker_image = f"{env.get('TERRAFORM_IMAGE_NAME')}:{env.get('TERRAFORM_IMAGE_TAG')}"
 docker_workdir = "/go/src/project"
 docker_cmd = [
     "docker",
@@ -64,16 +64,16 @@ docker_envs = [
 ]
 # TODO: Check the final names for config files
 if mfa_enabled:
-    docker_envs.append("--env=BACKEND_CONFIG_FILE=/config/backend.config")
-    docker_envs.append("--env=COMMON_CONFIG_FILE=/common-config/common.config")
+    docker_envs.append("--env=BACKEND_CONFIG_FILE=/config/backend.tfvars")
+    docker_envs.append("--env=COMMON_CONFIG_FILE=/common-config/common.tfvars")
     docker_envs.append(f"--env=SRC_AWS_CONFIG_FILE=/root/tmp/{project}/config")
     docker_envs.append(f"--env=SRC_AWS_SHARED_CREDENTIALS_FILE=/root/tmp/{project}/credentials")
     docker_envs.append(f"--env=AWS_CACHE_DIR=/root/tmp/{project}/cache")
 # Set Terraform default arguments -- normally used for plan, apply, destroy, and others
 terraform_default_args = [
-    "-var-file=/config/backend.config",
-    "-var-file=/common-config/common.config",
-    "-var-file=/config/account.config"
+    "-var-file=/config/backend.tfvars",
+    "-var-file=/common-config/common.tfvars",
+    "-var-file=/config/account.tfvars"
 ]
 
 # -------------------------------------------------------------------
@@ -106,14 +106,14 @@ def _build_cmd(command="", args=[], entrypoint=docker_entrypoint, extra_args=[])
 
     # Finally append all the arguments to the docker command
     cmd = cmd + args
-    print(f"[DEBUG] {" ".join(cmd)}")
+    print(f"[DEBUG] {' '.join(cmd)}")
     return cmd
 
 def init(extra_args):
     # TODO: Check the final names for config files
     cmd = _build_cmd(
         command="init",
-        args=["-backend-config=/config/backend.config"],
+        args=["-backend-config=/config/backend.tfvars"],
         extra_args=extra_args
     )
     return subprocess.call(cmd)

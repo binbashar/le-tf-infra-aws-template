@@ -1,9 +1,14 @@
+from pathlib import Path
+
+from jinja2 import Template
+from ruamel.yaml import YAML
+
 # Import leverage libraries
 from leverage import task
 from leverage import path
 
 # Import local libraries
-from _lib import terraform
+# from _lib import terraform
 
 @task()
 def _checkdir():
@@ -88,3 +93,19 @@ def validate_layout():
     '''Validate the layout convention of this Terraform layer.'''
     # TODO: Re-implement script in python
     # return os.system("../../@bin/scripts/validate-terraform-layout.sh")
+    pass
+
+@task()
+def create_project():
+    # TODO: Check for changes before running and warn
+    projectyaml = Path("project.yaml")
+    config = YAML().load(projectyaml)
+
+    templates = Path.cwd().rglob("*.template")
+    templates = [(template, Template(template.read_text())) for template in templates]
+
+    for location, template in templates:
+        extension = "env" if location.stem == "build" else "tfvars"
+        
+        rendered_template = location.parent / f"{location.stem}.{extension}"
+        rendered_template.write_text(template.render(config))

@@ -5,7 +5,7 @@ project         = "{{ short_name }}"
 project_long    = "{{ project_name }}"
 
 # AWS Region for DR replication (required by the backend but also used for other resources)
-region_secondary      = "{{ secondary_region|default("us-east-2", true) }}"
+region_secondary      = "{{ secondary_region|default("us-west-2") }}"
 
 # Account IDs
 {% for account_name, account_data in organization.accounts.items() %}
@@ -13,7 +13,7 @@ region_secondary      = "{{ secondary_region|default("us-east-2", true) }}"
 {% endfor %}
 
 # Hashicorp Vault private API endpoint
-vault_address = "https://{{ short_name }}-le-shared-vault-cluster.private.vault.{{ vault_id|default("XXXXXX") }}.aws.hashicorp.cloud:8200"
+vault_address = "https://{{ short_name }}-le-shared-vault-cluster.private.vault.{{ vault_address|default("XXXXXX") }}.aws.hashicorp.cloud:8200"
 
 # Hashicorp Vault token
 #
