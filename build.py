@@ -1,0 +1,111 @@
+from pathlib import Path
+
+from jinja2 import Template
+from ruamel.yaml import YAML
+
+# Import leverage libraries
+from leverage import task
+from leverage import path
+
+# Import local libraries
+# from _lib import terraform
+
+@task()
+def _checkdir():
+    '''Check if current directory can execute certain tasks'''
+    if path.get_working_path() == path.get_root_path():
+        print("This task cannot be run from root path")
+        sys.exit(0)
+    elif path.get_working_path() == path.get_account_path():
+        print("This task cannot be run from account path")
+        sys.exit(0)
+
+@task(_checkdir)
+def init(*args):
+    '''
+    Initialize Terraform in this layer. For instance:
+                                        > leverage init
+                                        > leverage init["-reconfigure"]
+    '''
+    terraform.init(list(args))
+    terraform.change_terraform_dir_ownership()
+
+@task(_checkdir)
+def plan(*args):
+    '''Generate a Terraform execution plan for this layer.'''
+    terraform.plan(list(args))
+
+@task(_checkdir)
+def apply(*args):
+    '''
+    Build or change the Terraform infrastructure in this layer. For instance:
+                                        > leverage apply
+                                        > leverage apply["-auto-approve"]
+    '''
+    terraform.apply(list(args))
+
+@task(_checkdir)
+def output(*args):
+    '''
+    Show all terraform output variables of this layer. For instance:
+                                        > leverage output
+                                        > leverage output["-json"]
+    '''
+    terraform.output()
+
+@task(_checkdir)
+def destroy(*args):
+    '''Destroy terraform infrastructure in this layer.'''
+    terraform.destroy(list(args))
+
+@task()
+def shell(*args):
+    '''Open a shell into the Terraform container in this layer.'''
+    terraform.shell(list(args))
+
+@task(_checkdir)
+def version():
+    '''Print terraform version.'''
+    terraform.version()
+
+@task()
+def format():
+    '''Rewrite all Terraform files to meet the canonical format.'''
+    terraform.format()
+
+@task()
+def format_check():
+    '''Check if Terraform files do not meet the canonical format.'''
+    terraform.format_check()
+
+@task(_checkdir)
+def decrypt():
+    '''Decrypt secrets.tf file.'''
+    os.system("ansible-vault decrypt --output secrets.dec.tf secrets.enc")
+
+@task(_checkdir)
+def encrypt():
+    '''Encrypt secrets.dec.tf file.'''
+    os.system("ansible-vault encrypt --output secrets.enc secrets.dec.tf && rm -rf secrets.dec.tf")
+
+@task(_checkdir)
+def validate_layout():
+    '''Validate the layout convention of this Terraform layer.'''
+    # TODO: Re-implement script in python
+    # return os.system("../../@bin/scripts/validate-terraform-layout.sh")
+    pass
+
+@task()
+def create_project():
+    # TODO: Check for changes before running and warn
+    projectyaml = Path("project.yaml")
+    config = YAML().load(projectyaml)
+
+    templates = Path.cwd().rglob("*.template")
+    templates = [(template, Template(template.read_text())) for template in templates]
+
+    for location, template in templates:
+        extension = "env" if location.stem == "build" else "tfvars"
+        
+        rendered_template = location.parent / f"{location.stem}.{extension}"
+        rendered_template.write_text(template.render(config))
