@@ -1,0 +1,50 @@
+#
+# Groups
+#
+module "iam_group_admins" {
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v3.16.0"
+  name   = "admins_management_org"
+
+  {% set admins_group = accounts.management.groups | selectattr("name", "equalto", "admins") | list %}
+  {% set newitem = joiner(",") %}
+  group_users = [
+    {%- if admins_group | length %}
+    {%- for user in admins_group | first | value(key="users") -%}{{ newitem() }}
+    module.user["{{ user }}"].this_iam_user_name
+    {% endfor %}
+    {% endif %}
+  ]
+
+  {% set newitem = joiner(",") %}
+  custom_group_policy_arns = [
+    {%- if admins_group | length %}
+    {%- for policy in admins_group | first | value(key="policies") -%}{{ newitem() }}
+    {{ policy }}
+    {% endfor %}
+    {% endif %}
+  ] 
+}
+
+module "iam_group_finops" {
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v3.16.0"
+  name   = "finops_management_org"
+
+  {% set finops_group = accounts.management.groups | selectattr("name", "equalto", "finops") | list %}
+  {% set newitem = joiner(",") %}
+  group_users = [
+    {%- if finops_group | length %}
+    {%- for user in finops_group | first | value(key="users") -%}{{ newitem() }}
+    module.user["{{user}}"].this_iam_user_name
+    {% endfor %}
+    {% endif %}
+  ]
+
+  {% set newitem = joiner(",") %}
+  custom_group_policy_arns = [
+    {%- if finops_group | length %}
+    {%- for policy in finops_group | first | value(key="policies") -%}{{ newitem() }}
+    {{ policy }}
+    {% endfor %}
+    {% endif %}
+  ]
+}

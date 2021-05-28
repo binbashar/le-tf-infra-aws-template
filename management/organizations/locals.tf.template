@@ -1,0 +1,28 @@
+locals {
+    {% set newitem = joiner(",") %}
+    organizational_units = [
+        {%- for organizational_unit in organization.organizational_units -%}{{ newitem() }}
+        "{{ organizational_unit.name }}"{%- endfor %}
+
+    ]
+
+    management_account = {
+        email = "{{ organization.accounts | selectattr("name", "equalto", "management") | first | value(key="email") }}"
+    }
+
+    {% set newitem = joiner(",") %}
+    accounts = {
+        {%- for account in organization.accounts | rejectattr("name", "equalto", "management") %}{{ newitem() }}
+        {{ account.name }} = {
+            email = "{{ account.email }}",
+            {# Assumes account has a parent organizational unit and is unique #}
+            parent = {% for organizational_unit in organization.organizational_units -%}
+            {%- if account.name in organizational_unit.accounts -%}
+            {{ organizational_unit.name }}
+            {%- endif -%}
+            {%- endfor %}
+
+        }
+        {% endfor %}
+    }
+}

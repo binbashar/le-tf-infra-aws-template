@@ -1,0 +1,11 @@
+locals {
+  tags = {
+    Terraform   = "true"
+    Environment = var.environment
+  }
+
+  users = [
+    "{{ accounts.management.users | join("\",\n\"") | indent(width=4)}}"
+  ]
+
+}
