@@ -11,5 +11,5 @@ resource "aws_organizations_account" "accounts" {
 
   name      = "${var.project}-${each.key}"
   email     = each.value.email
-  parent_id = aws_organizations_organizational_unit.unis["${each.value.parent}"].id
+  parent_id = aws_organizations_organizational_unit.units[each.value.parent].id
 }
