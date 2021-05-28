@@ -1,13 +1,12 @@
 #
 # AWS IAM Users
 #
-#============================#
-# User: Example User         #
-#============================#
-module "user_example_user" {
-  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-user?ref=v2.20.0"
+module "user" {
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-user?ref=v3.16.0"
 
-  name                    = "example.user"
+  for_each = toset(local.users)
+
+  name                    = each.key
   force_destroy           = true
   password_reset_required = true
   password_length         = 30
@@ -16,5 +15,5 @@ module "user_example_user" {
   create_iam_access_key         = false
   upload_iam_user_ssh_key       = false
 
-  pgp_key = file("keys/example.user")
+  pgp_key = file("keys/${each.key}")
 }
