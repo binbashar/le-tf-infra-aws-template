@@ -50,7 +50,6 @@ variable "environment" {
   description = "Environment Name"
 }
 
-# Not set anywhere, should be added to current account config.tfvars?
 variable "region_secondary" {
   type        = string
   description = "AWS Scondary Region for HA"
