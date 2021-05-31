@@ -1,8 +1,10 @@
 locals {
     {% set newitem = joiner(",") %}
     organizational_units = [
+        {%- if organization.organizational_units -%}
         {%- for organizational_unit in organization.organizational_units -%}{{ newitem() }}
         "{{ organizational_unit.name }}"{%- endfor %}
+        {%- endif %}
 
     ]
 
