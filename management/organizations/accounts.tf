@@ -2,12 +2,14 @@
 # Organization accounts
 #
 resource "aws_organizations_account" "management" {
-  name  = "leverage-management"
-  email = "aws@leverage.com"
+  name  = "${var.project}-management"
+  email = local.management_account.email
 }
 
-resource "aws_organizations_account" "security" {
-  name      = "leverage-security"
-  email     = "aws+security@leverage.com"
-  parent_id = aws_organizations_organizational_unit.security.id
+resource "aws_organizations_account" "accounts" {
+  for_each = local.accounts
+
+  name      = "${var.project}-${each.key}"
+  email     = each.value.email
+  parent_id = aws_organizations_organizational_unit.units[each.value.parent].id
 }

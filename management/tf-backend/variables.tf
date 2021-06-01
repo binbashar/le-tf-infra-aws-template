@@ -1,5 +1,5 @@
 #
-# config/backend.config
+# management/config/backend.tfvars
 #
 #================================#
 # Terraform AWS Backend Settings #
@@ -30,7 +30,7 @@ variable "encrypt" {
 }
 
 #
-# config/base.config
+# config/common.tfvars
 #
 #=============================#
 # Project Variables           #
@@ -50,38 +50,7 @@ variable "environment" {
   description = "Environment Name"
 }
 
-#
-# config/extra.config
-#
-#=============================#
-# Accounts & Extra Vars       #
-#=============================#
 variable "region_secondary" {
   type        = string
   description = "AWS Scondary Region for HA"
-}
-
-variable "management_account_id" {
-  type        = string
-  description = "Account: Management"
-}
-
-variable "security_account_id" {
-  type        = string
-  description = "Account: Security & Users Management"
-}
-
-variable "shared_account_id" {
-  type        = string
-  description = "Account: Shared Resources"
-}
-
-variable "appsdevstg_account_id" {
-  type        = string
-  description = "Account: Dev Modules & Libs"
-}
-
-variable "appsprd_account_id" {
-  type        = string
-  description = "Account: Prod Modules & Libs"
 }
