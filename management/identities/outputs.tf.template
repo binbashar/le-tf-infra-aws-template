@@ -1,16 +1,8 @@
+{% from "le-resources/utils.jinja" import user_name_output, user_encripted_password_output%}
 #
 # users.tf sensitive data output
 #
 {% for user in accounts.management.users %}
-output "user_{{ user | replace(".", "_") }}_name" {
-  description = "The user's name"
-  value       = module.user["{{ user }}"].this_iam_user_name
-}
-
-output "user_{{ user | replace(".", "_") }}_login_profile_encrypted_password" {
-  description = "The encrypted password, base64 encoded"
-  value       = module.user["{{ user }}"].this_iam_user_login_profile_encrypted_password
-  sensitive   = true
-}
-
+{{ user_name_output(user)}}
+{{ user_encripted_password_output(user)}}
 {% endfor -%}
