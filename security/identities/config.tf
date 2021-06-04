@@ -21,7 +21,7 @@ terraform {
     key = "security/identities/terraform.tfstate"
   }
 }
- #Ask what about these
+
 data "terraform_remote_state" "apps-devstg-keys" {
   backend = "s3"
 
