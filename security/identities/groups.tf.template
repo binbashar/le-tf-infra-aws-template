@@ -42,7 +42,7 @@
         account_name="security",
         group_name="deploymaster",
         default_policies=[
-            "aws_iam_policiy.assume_deploymaster_role.arn"
+            "aws_iam_policy.assume_deploymaster_role.arn"
         ]
     )
 }}
