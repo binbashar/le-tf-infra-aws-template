@@ -1,5 +1,5 @@
 #
-# management/config/backend.tfvars
+# security/config/backend.tfvars
 #
 #================================#
 # Terraform AWS Backend Settings #
@@ -50,7 +50,7 @@ variable "environment" {
   description = "Environment Name"
 }
 
-variable "management_account_id" {
+variable "region_secondary" {
   type        = string
-  description = "Account: management"
+  description = "AWS Scondary Region for HA"
 }

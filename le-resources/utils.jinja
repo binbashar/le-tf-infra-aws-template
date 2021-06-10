@@ -1,0 +1,42 @@
+{#
+    Template utils for known structures
+#}
+{% macro iam_group_with_policies(accounts, account_name, group_name, default_policies) %}
+module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v3.16.0"
+  name   = "{{ group_name }}{% if account_name == 'management' %}_management_org{% endif %}"
+
+  {% set group = accounts[account_name].groups | selectattr("name", "equalto", group_name) | first | default({}) %}
+  {% set users = group.get("users", []) %}
+  {% set policies = group.get("policies", default_policies)%}
+
+  {%- set newitem = joiner(",") %}
+  group_users = [
+    {%- for user in users -%}{{ newitem() }}
+    module.user["{{ user }}"].this_iam_user_name{% endfor %}
+
+  ]
+
+  {% set newitem = joiner(",") %}
+  custom_group_policy_arns = [
+    {%- for policy in policies -%}{{ newitem() }}
+    {{ policy }}{% endfor %}
+
+  ] 
+}
+{% endmacro %}
+
+{% macro user_name_output(user) %}
+output "user_{{ user | replace(".", "_") }}_name" {
+  description = "The user's name"
+  value       = module.user["{{ user }}"].this_iam_user_name
+}
+{% endmacro%}
+
+{% macro user_encripted_password_output(user) %}
+output "user_{{ user | replace(".", "_") }}_login_profile_encrypted_password" {
+  description = "The encrypted password, base64 encoded"
+  value       = module.user["{{ user }}"].this_iam_user_login_profile_encrypted_password
+  sensitive   = true
+}
+{% endmacro %}
