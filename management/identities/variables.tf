@@ -49,3 +49,8 @@ variable "environment" {
   type        = string
   description = "Environment Name"
 }
+
+variable "management_account_id" {
+  type        = string
+  description = "Account: management"
+}
