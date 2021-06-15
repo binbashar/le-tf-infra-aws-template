@@ -12,7 +12,7 @@ bucket          = "{{ short_name }}-security-terraform-backend"
 region          = "{{ primary_region | default("us-west-2") }}"
 
 # Enable DynamoDB server-side encryption?
-encrypt         = {{ organization.accounts | selectattr("name", "equalto", "security") | pprint | first | attr("enableDynamoEncryption") | default("true") | lower }}
+encrypt         = {{ organization.accounts | selectattr("name", "equalto", "security") | first | attr("enable_dynamo_encryption") | default("true") | lower }}
 
 # DynamoDB Table Name
 dynamodb_table  = "{{ short_name }}-security-terraform-backend"
