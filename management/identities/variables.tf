@@ -50,7 +50,35 @@ variable "environment" {
   description = "Environment Name"
 }
 
+variable "region_secondary" {
+  type        = string
+  description = "AWS Scondary Region for HA"
+}
+
 variable "management_account_id" {
   type        = string
-  description = "Account: management"
+  description = "Account: Management"
+}
+
+variable "security_account_id" {
+  type        = string
+  description = "Account: Security & Users Management"
+}
+
+variable "shared_account_id" {
+  type        = string
+  description = "Account: Shared Resources"
+}
+
+#=============================#
+# Hashicorp Vault Vars        #
+#=============================#
+variable "vault_address" {
+  type        = string
+  description = "Hashicorp vault api endpoint address"
+}
+
+variable "vault_token" {
+  type        = string
+  description = "Hashicorp vault admin token"
 }
