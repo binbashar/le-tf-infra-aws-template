@@ -1,0 +1,8 @@
+{% from "le-resources/utils.jinja" import user_name_output, user_encripted_password_output%}
+#
+# users.tf sensitive data output
+#
+{% for user in accounts.shared.users %}
+{{ user_name_output(user)}}
+{{ user_encripted_password_output(user)}}
+{% endfor -%}
