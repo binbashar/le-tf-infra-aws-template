@@ -1,5 +1,5 @@
 #
-# security/config/backend.tfvars
+# shared/config/backend.tfvars
 #
 #================================#
 # Terraform AWS Backend Settings #
