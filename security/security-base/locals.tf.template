@@ -1,0 +1,9 @@
+locals {
+  tags = {
+    Name      = "${var.project}-${var.environment}-cloudtrail-org"
+    Namespace = var.project
+    Stage     = var.environment
+  }
+
+  access_analyzer_name = "{{ accounts.security.access_analyzer_name }}"
+}

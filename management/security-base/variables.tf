@@ -1,5 +1,5 @@
 #
-# security/config/backend.tfvars
+# management/config/backend.tfvars
 #
 #================================#
 # Terraform AWS Backend Settings #
@@ -83,3 +83,14 @@ variable "vault_token" {
   description = "Hashicorp vault admin token"
 }
 
+#=============================#
+# Notifications               #
+#=============================#
+#
+# AWS SNS -> Lambda -> Slack: tools-monitoring-sec
+#
+variable "sns_topic_name_monitoring_sec" {
+  type        = string
+  description = ""
+  default     = "sns-topic-slack-notify-monitoring-sec"
+}
