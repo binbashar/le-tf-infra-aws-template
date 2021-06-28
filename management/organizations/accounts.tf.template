@@ -7,8 +7,8 @@ resource "aws_organizations_account" "management" {
   name  = "${var.project_long}-management"
   email = local.management_account.email
 }
-{% endif %}
 
+{% endif %}
 resource "aws_organizations_account" "accounts" {
   for_each = local.accounts
 
