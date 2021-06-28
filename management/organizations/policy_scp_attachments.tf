@@ -6,4 +6,8 @@ resource "aws_organizations_policy_attachment" "policy_attachments" {
 
   policy_id = each.value.policy.id
   target_id = aws_organizations_organizational_unit.units[each.key].id
+
+  depends_on = [
+    aws_organizations_organizational_unit.units
+  ]
 }
