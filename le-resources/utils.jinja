@@ -21,7 +21,7 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
 {%- set policies = group.get("policies", default_policies) %}
 
   group_users = [{%- for user in users %}
-    module.user["{{ user }}"].this_iam_user_name
+    module.user["{{ user }}"].iam_user_name
     {%- if not loop.last %},{% else %}
     {% endif %}
 {%- endfor %}]
@@ -40,7 +40,7 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
 {% macro user_name_output(user) %}
 output "user_{{ user | replace(".", "_") }}_name" {
   description = "The user's name"
-  value       = module.user["{{ user }}"].this_iam_user_name
+  value       = module.user["{{ user }}"].iam_user_name
 }{% endmacro %}
 
 {# Output user encripted password:
@@ -50,6 +50,6 @@ output "user_{{ user | replace(".", "_") }}_name" {
 {% macro user_encripted_password_output(user, sensitive=True) %}
 output "user_{{ user | replace(".", "_") }}_login_profile_encrypted_password" {
   description = "The encrypted password, base64 encoded"
-  value       = module.user["{{ user }}"].this_iam_user_login_profile_encrypted_password
+  value       = module.user["{{ user }}"].iam_user_login_profile_encrypted_password
   sensitive   = {% if sensitive %}true{% else %}false{% endif %}
 }{% endmacro %}
