@@ -2,7 +2,7 @@
 #
 # users.tf sensitive data output
 #
-{% for user in accounts.management.users %}
+{%- for user in accounts.security.users -%}
 {{ user_name_output(user)}}
 {{ user_encripted_password_output(user)}}
-{% endfor -%}
+{% endfor %}

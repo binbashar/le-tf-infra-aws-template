@@ -82,15 +82,3 @@ variable "vault_token" {
   type        = string
   description = "Hashicorp vault admin token"
 }
-
-#=============================#
-# Notifications               #
-#=============================#
-#
-# AWS SNS -> Lambda -> Slack: tools-monitoring-sec
-#
-variable "sns_topic_name_monitoring_sec" {
-  type        = string
-  description = ""
-  default     = "sns-topic-slack-notify-monitoring-sec"
-}

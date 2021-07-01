@@ -1,0 +1,18 @@
+#
+# Organization accounts
+#
+{%- set bootstrap = bootstrap | default(False) %}
+{%- if not bootstrap %}
+resource "aws_organizations_account" "management" {
+  name  = "${var.project_long}-management"
+  email = local.management_account.email
+}
+
+{% endif %}
+resource "aws_organizations_account" "accounts" {
+  for_each = local.accounts
+
+  name      = "${var.project_long}-${each.key}"
+  email     = each.value.email
+  parent_id = aws_organizations_organizational_unit.units[each.value.parent_ou].id
+}

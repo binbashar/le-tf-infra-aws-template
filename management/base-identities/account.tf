@@ -2,7 +2,7 @@
 # Account Resources
 #
 module "aws_iam_account_config" {
-  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-account?ref=v3.8.0"
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-account?ref=v4.1.0"
 
   // If IAM account alias was previously set (either via AWS console or during the creation of an account from AWS
   // Organizations) you will see this error:
@@ -12,13 +12,13 @@ module "aws_iam_account_config" {
 
   # account password policy
   create_account_password_policy = true
-  max_password_age               = 60
+  max_password_age               = 30
   minimum_password_length        = 30
   require_numbers                = true
   require_lowercase_characters   = true
   require_symbols                = true
   require_uppercase_characters   = true
-  password_reuse_prevention      = 12
+  password_reuse_prevention      = 5
   allow_users_to_change_password = true
 }
 

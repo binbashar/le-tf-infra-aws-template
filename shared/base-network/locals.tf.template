@@ -101,6 +101,5 @@ locals {
   }
 
   # Data source definitions
-  data_vpcs = {
-  }
+  data_vpcs = {}
 }
