@@ -90,7 +90,7 @@ module "iam_assumable_role_oaar" {
   source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-assumable-role?ref=v4.1.0"
 
   trusted_role_arns = [
-    "arn:aws:iam::${var.root_account_id}:root"
+    "arn:aws:iam::${var.management_account_id}:root"
   ]
 
   create_role           = true
@@ -102,7 +102,7 @@ module "iam_assumable_role_oaar" {
   #
   # MFA setup
   #
-  role_requires_mfa    = true
+  role_requires_mfa    = false
   mfa_age              = 7200 # Maximum CLI/API session duration in seconds between 3600 and 43200
   max_session_duration = 3600 # Max age of the session (in seconds) when assuming roles
 

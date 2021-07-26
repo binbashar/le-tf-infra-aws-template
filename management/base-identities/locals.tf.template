@@ -5,6 +5,6 @@ locals {
   }
 
   users = [
-    "{{ accounts.management.users | join("\",\n\"") | indent(width=4)}}"
+    "{{ accounts.management.users | join("\",\n\"") | indent(width=4) }}"
   ]
 }

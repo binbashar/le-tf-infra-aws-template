@@ -3,7 +3,7 @@
 #
 
 # AWS Profile (required by the backend but also used for other resources)
-profile         = "{{ short_name }}-shared-devops"
+profile         = "{{ short_name }}-shared-oaar"
 
 # S3 bucket
 bucket          = "{{ short_name }}-shared-terraform-backend"

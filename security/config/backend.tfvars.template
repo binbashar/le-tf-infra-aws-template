@@ -3,7 +3,7 @@
 #
 
 # AWS Profile (required by the backend but also used for other resources)
-profile         = "{{ short_name }}-security-devops"
+profile         = "{{ short_name }}-security-oaar"
 
 # S3 bucket
 bucket          = "{{ short_name }}-security-terraform-backend"

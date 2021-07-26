@@ -52,7 +52,7 @@ variable "environment" {
 
 variable "region_secondary" {
   type        = string
-  description = "AWS Scondary Region for HA"
+  description = "AWS Secondary Region for HA"
 }
 
 variable "management_account_id" {
@@ -68,16 +68,6 @@ variable "security_account_id" {
 variable "shared_account_id" {
   type        = string
   description = "Account: Shared Resources"
-}
-
-variable "appsdevstg_account_id" {
-  type        = string
-  description = "Account: Dev Modules & Libs"
-}
-
-variable "appsprd_account_id" {
-  type        = string
-  description = "Account: Prod Modules & Libs"
 }
 
 #=============================#

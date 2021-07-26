@@ -26,19 +26,18 @@ terraform {
 # Data sources                #
 #=============================#
 
-#
-# data type from output for tools-ec2
-#
-data "terraform_remote_state" "tools-vpn-server" {
-  backend = "s3"
+# Tools VPN Server remote states
+# To be used after `tools-vpn-server` layer is deployed
+# data "terraform_remote_state" "tools-vpn-server" {
+#   backend = "s3"
 
-  config = {
-    region  = var.region
-    profile = var.profile
-    bucket  = var.bucket
-    key     = "${var.environment}/vpn/terraform.tfstate"
-  }
-}
+#   config = {
+#     region  = var.region
+#     profile = var.profile
+#     bucket  = var.bucket
+#     key     = "${var.environment}/vpn/terraform.tfstate"
+#   }
+# }
 
 # VPC apps remote states
 data "terraform_remote_state" "vpc-apps" {

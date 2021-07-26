@@ -17,11 +17,11 @@ locals {
   ]
 
   private_subnets = [
-    "{{ accounts.shared.networks[0].private_subnets | join("\",\n\"") | indent(width=4)}}"
+    "{{ accounts.shared.networks[0].private_subnets | join("\",\n\"") | indent(width=4) }}"
   ]
 
   public_subnets = [
-    "{{ accounts.shared.networks[0].public_subnets | join("\",\n\"") | indent(width=4)}}"
+    "{{ accounts.shared.networks[0].public_subnets | join("\",\n\"") | indent(width=4) }}"
   ]
 }
 
@@ -29,22 +29,15 @@ locals {
 
   # Fixed private inbounds
   fixed_private_inbound = [
-    {
-      rule_number = 10 # shared pritunl vpn server
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "all"
-      cidr_block  = "${data.terraform_remote_state.tools-vpn-server.outputs.instance_private_ip}/32"
-    },
-    {
-      rule_number = 20 # vault hvn vpc
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "all"
-      cidr_block  = var.vpc_vault_hvn_cird
-    },
+    # To be used after `tools-vpn-server` layer is deployed
+    # {
+    #  rule_number = 10 # shared pritunl vpn server
+    #  rule_action = "allow"
+    #  from_port   = 0
+    #  to_port     = 65535
+    #  protocol    = "all"
+    #  cidr_block  = "${data.terraform_remote_state.tools-vpn-server.outputs.instance_private_ip}/32"
+    #}
   ]
 
   # Dynamic private inbounds
