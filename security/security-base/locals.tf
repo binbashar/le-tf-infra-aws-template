@@ -4,6 +4,4 @@ locals {
     Namespace = var.project
     Stage     = var.environment
   }
-
-  access_analyzer_name = "{{ accounts.security.access_analyzer_name }}"
 }
