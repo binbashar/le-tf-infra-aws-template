@@ -3,8 +3,7 @@
 #
 
 # AWS Profile (required by the backend but also used for other resources)
-{%- set bootstrap = bootstrap | default(False) %}
-profile         = "{{ short_name }}-management{% if not bootstrap %}-oaar{% endif %}"
+profile         = "{{ short_name }}-bootstrap"
 
 # S3 bucket
 bucket          = "{{ short_name }}-management-terraform-backend"

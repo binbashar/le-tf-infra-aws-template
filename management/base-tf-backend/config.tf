@@ -21,11 +21,9 @@ terraform {
   required_providers {
     aws = "~> 3.0"
   }
-{%- set bootstrap = bootstrap | default(False) %}
-{%- if not bootstrap %}
 
-  backend "s3" {
-    key = "management/tf-backend/terraform.tfstate"
-  }
-{% endif -%}
+  # Uncomment after first `apply`
+  # backend "s3" {
+  #   key = "management/tf-backend/terraform.tfstate"
+  # }
 }

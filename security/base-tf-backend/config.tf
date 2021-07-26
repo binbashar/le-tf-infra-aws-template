@@ -22,7 +22,8 @@ terraform {
     aws = "~> 3.0"
   }
 
-  backend "s3" {
-    key = "security/tf-backend/terraform.tfstate"
-  }
+  # Uncomment after first `init`
+  # backend "s3" {
+  #   key = "security/tf-backend/terraform.tfstate"
+  # }
 }

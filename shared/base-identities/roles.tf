@@ -158,7 +158,7 @@ module "iam_assumable_role_oaar" {
   #
   # MFA setup
   #
-  role_requires_mfa    = true
+  role_requires_mfa    = false
   mfa_age              = 7200 # Maximum CLI/API session duration in seconds between 3600 and 43200
   max_session_duration = 3600 # Max age of the session (in seconds) when assuming roles
 
