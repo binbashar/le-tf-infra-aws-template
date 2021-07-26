@@ -17,11 +17,11 @@ locals {
   ]
 
   private_subnets = [
-    "{{ accounts.shared.networks[0].private_subnets | join("\",\n\"") | indent(width=4)}}"
+    "{{ accounts.shared.networks[0].private_subnets | join("\",\n\"") | indent(width=4) }}"
   ]
 
   public_subnets = [
-    "{{ accounts.shared.networks[0].public_subnets | join("\",\n\"") | indent(width=4)}}"
+    "{{ accounts.shared.networks[0].public_subnets | join("\",\n\"") | indent(width=4) }}"
   ]
 }
 

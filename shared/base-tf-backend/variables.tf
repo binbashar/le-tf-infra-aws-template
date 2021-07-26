@@ -52,5 +52,5 @@ variable "environment" {
 
 variable "region_secondary" {
   type        = string
-  description = "AWS Scondary Region for HA"
+  description = "AWS Secondary Region for HA"
 }

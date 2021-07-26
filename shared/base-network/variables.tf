@@ -52,7 +52,7 @@ variable "environment" {
 
 variable "region_secondary" {
   type        = string
-  description = "AWS Scondary Region for HA"
+  description = "AWS Secondary Region for HA"
 }
 
 variable "management_account_id" {
@@ -126,20 +126,20 @@ variable "vpc_vault_hvn_peering_connection_id" {
   default     = "pcx-0109e4ef7e784ee06"
 }
 
-variable "vpc_vault_hvn_cird" {
+variable "vpc_vault_hvn_cidr" {
   description = "Hahicorp Vault Cloud HVN VPC CIDR segment"
   type        = string
   default     = "172.25.16.0/20"
 }
 
 variable "vpc_enable_nat_gateway" {
-  description = "Enable NAT Gatewway"
+  description = "Enable NAT Gateway"
   type        = bool
   default     = false
 }
 
 variable "vpc_single_nat_gateway" {
-  description = "Single NAT Gatewway"
+  description = "Single NAT Gateway"
   type        = bool
   default     = true
 }
