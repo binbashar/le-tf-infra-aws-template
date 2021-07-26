@@ -20,9 +20,7 @@ resource "aws_iam_policy" "assume_devops_role" {
               ],
               "Resource": [
                   "arn:aws:iam::${var.shared_account_id}:role/DevOps",
-                  "arn:aws:iam::${var.security_account_id}:role/DevOps",
-                  "arn:aws:iam::${var.appsdevstg_account_id}:role/DevOps",
-                  "arn:aws:iam::${var.appsprd_account_id}:role/DevOps"
+                  "arn:aws:iam::${var.security_account_id}:role/DevOps"
               ]
           }
       ]
@@ -48,9 +46,7 @@ resource "aws_iam_policy" "assume_admin_role" {
               ],
               "Resource": [
                   "arn:aws:iam::${var.shared_account_id}:role/Admin",
-                  "arn:aws:iam::${var.security_account_id}:role/Admin",
-                  "arn:aws:iam::${var.appsdevstg_account_id}:role/Admin",
-                  "arn:aws:iam::${var.appsprd_account_id}:role/Admin"
+                  "arn:aws:iam::${var.security_account_id}:role/Admin"
               ]
           }
       ]
@@ -75,9 +71,7 @@ resource "aws_iam_policy" "assume_deploymaster_role" {
                   "sts:AssumeRole"
               ],
               "Resource": [
-                  "arn:aws:iam::${var.shared_account_id}:role/DeployMaster",
-                  "arn:aws:iam::${var.appsdevstg_account_id}:role/DeployMaster",
-                  "arn:aws:iam::${var.appsprd_account_id}:role/DeployMaster"
+                  "arn:aws:iam::${var.shared_account_id}:role/DeployMaster"
               ]
           }
       ]
@@ -103,9 +97,7 @@ resource "aws_iam_policy" "assume_auditor_role" {
               ],
               "Resource": [
                   "arn:aws:iam::${var.shared_account_id}:role/Auditor",
-                  "arn:aws:iam::${var.security_account_id}:role/Auditor",
-                  "arn:aws:iam::${var.appsdevstg_account_id}:role/Auditor",
-                  "arn:aws:iam::${var.appsprd_account_id}:role/Auditor"
+                  "arn:aws:iam::${var.security_account_id}:role/Auditor"
               ]
           }
       ]
