@@ -70,16 +70,6 @@ variable "shared_account_id" {
   description = "Account: Shared Resources"
 }
 
-variable "appsdevstg_account_id" {
-  type        = string
-  description = "Account: Dev Modules & Libs"
-}
-
-variable "appsprd_account_id" {
-  type        = string
-  description = "Account: Prod Modules & Libs"
-}
-
 #=============================#
 # Hashicorp Vault Vars        #
 #=============================#
