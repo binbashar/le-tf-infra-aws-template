@@ -5,7 +5,7 @@ resource "null_resource" "enable_delegated_administrator" {
 }
 
 resource "aws_organizations_delegated_administrator" "access_analyzer_administrator" {
-    account_id = var.security_account_id
+    account_id = aws_organizations_account.accounts["security"].id
     service_principal = "access-analyzer.amazonaws.com"
 
     depends_on = [
