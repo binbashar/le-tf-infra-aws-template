@@ -9,6 +9,7 @@ resource "aws_organizations_delegated_administrator" "access_analyzer_administra
     service_principal = "access-analyzer.amazonaws.com"
 
     depends_on = [
+        aws_organizations_organization.main,
         aws_organizations_account.accounts["security"],
         null_resource.enable_delegated_administrator
     ]
