@@ -1,3 +1,7 @@
+{%- set acc = namespace(users=[]) -%}
+{%- for groupusers in accounts.security.groups | map(attribute="users") -%}
+{%- set acc.users = acc.users + groupusers -%}
+{%- endfor -%}
 locals {
   tags = {
     Terraform   = "true"
@@ -5,6 +9,6 @@ locals {
   }
 
   users = [
-    "{{ accounts.security.users | join("\",\n\"") | indent(width=4) }}"
+    "{{ acc.users | unique | join("\",\n\"") | indent(width=4) }}"
   ]
 }

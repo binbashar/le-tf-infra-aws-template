@@ -38,6 +38,10 @@ resource "aws_organizations_policy" "default" {
       }
   }
   JSON
+
+  depends_on = [
+      aws_organizations_organization.main
+  ]
 }
 
 #
@@ -102,4 +106,8 @@ resource "aws_organizations_policy" "standard" {
       }
   }
   JSON
+
+  depends_on = [
+      aws_organizations_organization.main
+  ]
 }
