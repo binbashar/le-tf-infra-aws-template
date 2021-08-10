@@ -2,22 +2,22 @@
 #
 # Groups
 #{{
-    iam_group_with_policies(
-        accounts=accounts,
-        account_name="management",
-        group_name="admins",
-        default_policies=[
-            "\"arn:aws:iam::aws:policy/AdministratorAccess\""
-        ]
-    )
+  iam_group_with_policies(
+    accounts=accounts,
+    account_name="management",
+    group_name="admins",
+    default_policies=[
+      "\"arn:aws:iam::aws:policy/AdministratorAccess\""
+    ]
+  )
 }}{{
-    iam_group_with_policies(
-        accounts=accounts,
-        account_name="management",
-        group_name="finops",
-        default_policies=[
-            "\"arn:aws:iam::aws:policy/job-function/Billing\"",
-            "\"arn:aws:iam::aws:policy/job-function/ViewOnlyAccess\""
-        ]
-    )
+  iam_group_with_policies(
+    accounts=accounts,
+    account_name="management",
+    group_name="finops",
+    default_policies=[
+      "\"arn:aws:iam::aws:policy/job-function/Billing\"",
+      "\"arn:aws:iam::aws:policy/job-function/ViewOnlyAccess\""
+    ]
+  )
 }}
