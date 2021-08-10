@@ -65,3 +65,18 @@ output "user_{{ user | replace(".", "_") }}_login_profile_encrypted_password" {
   value       = module.user["{{ user }}"].iam_user_login_profile_encrypted_password
   sensitive   = {% if sensitive %}true{% else %}false{% endif %}
 }{% endmacro %}
+
+{# users Outputs:
+    account (dict): config of the account for which users' outputs will be produced.
+#}
+{% macro users_outputs(account) %}
+
+{%- set acc = namespace(users=[]) -%}
+{%- for groupusers in account.groups | map(attribute="users") -%}
+{%- set acc.users = acc.users + groupusers -%}
+{%- endfor -%}
+
+{%- for user in acc.users | unique | sort -%}
+{{ user_name_output(user) }}
+{{ user_encripted_password_output(user) }}
+{% endfor %}{% endmacro %}

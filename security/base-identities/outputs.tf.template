@@ -1,8 +1,5 @@
-{% from "le-resources/utils.jinja" import user_name_output, user_encripted_password_output%}
+{%- from "le-resources/utils.jinja" import users_outputs -%}
 #
 # users.tf sensitive data output
 #
-{%- for user in accounts.security.users -%}
-{{ user_name_output(user) }}
-{{ user_encripted_password_output(user) }}
-{% endfor %}
+{{ users_outputs(accounts.security) }}
