@@ -1,14 +1,9 @@
-{%- set acc = namespace(users=[]) -%}
-{%- for groupusers in accounts.management.groups | map(attribute="users") -%}
-{%- set acc.users = acc.users + groupusers -%}
-{%- endfor -%}
+{%- from "le-resources/utils.jinja" import account_users_list -%}
 locals {
   tags = {
     Terraform   = "true"
     Environment = var.environment
   }
 
-  users = [
-    "{{ acc.users | unique | join("\",\n\"") | indent(width=4) }}"
-  ]
+  users = {{ account_users_list(accounts.management) }}
 }
