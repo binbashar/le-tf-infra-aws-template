@@ -1,8 +1,7 @@
-{% from "le-resources/utils.jinja" import iam_group_with_policies %}
+{%- from "le-resources/utils.jinja" import iam_group_with_policies -%}
 #
 # Groups
-#
-{{
+#{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="management",
@@ -11,8 +10,7 @@
             "\"arn:aws:iam::aws:policy/AdministratorAccess\""
         ]
     )
-}}
-{{
+}}{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="management",

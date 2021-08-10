@@ -1,8 +1,7 @@
-{% from "le-resources/utils.jinja" import iam_group_with_policies %}
+{%- from "le-resources/utils.jinja" import iam_group_with_policies -%}
 #
 # Groups
-#
-{{
+#{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="security",
@@ -11,8 +10,7 @@
             "aws_iam_policy.assume_admin_role.arn",
         ]
     )
-}}
-{{
+}}{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="security",
@@ -21,8 +19,7 @@
             "aws_iam_policy.assume_auditor_role.arn",
         ]
     )
-}}
-{{
+}}{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="security",
@@ -34,8 +31,7 @@
 }}
 #
 # Machine users groups
-#
-{{
+#{{
     iam_group_with_policies(
         accounts=accounts,
         account_name="security",
