@@ -34,6 +34,18 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
 }
 {% endmacro %}
 
+{# Account users list:
+    account (dict): config of the account for which all the users will be listed. Repeated users are purged.
+#}
+{% macro account_users_list(account) %}
+{%- set acc = namespace(users=[]) -%}
+{%- for groupusers in account.groups | map(attribute="users") -%}
+{%- set acc.users = acc.users + groupusers -%}
+{%- endfor -%}
+  [
+    "{{ acc.users | unique | sort | join("\",\n\"") | indent(width=4) }}"
+  ]{% endmacro %}
+
 {# Output user name:
     user (string): name of the user. `.` will be replaced by `_` in the output name
 #}
