@@ -1,0 +1,81 @@
+project_name: <project name>
+short_name: <short project name> # Two-letter-long abridged version of the project name
+
+primary_region: us-east-1
+secondary_region: us-west-2
+
+organization:
+  accounts:
+  - name: management
+    email: <management email address>
+  - name: security
+    email: <security email address>
+  - name: shared
+    email: <shared email address>
+  organizational_units:
+    ##-------------------------------------##
+    ## Available organizations policies:
+    ## - aws_organizations_policy.default
+    ## - aws_organizations_policy.standard
+    ##-------------------------------------##
+  - name: security
+    policy:
+    - aws_organizations_policy.default
+    accounts:
+    - security
+  - name: shared
+    policy:
+    - aws_organizations_policy.standard
+    accounts:
+    - shared
+
+accounts:
+  management:
+    groups:
+    ##------------------------------------------------------------##
+    ## Available groups:
+    ## - admins:
+    ##   Default policies:
+    ##   - "arn:aws:iam::aws:policy/AdministratorAccess"
+    ## - finops:
+    ##   Default policies:
+    ##   - "arn:aws:iam::aws:policy/job-function/Billing"
+    ##   - "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
+    ##------------------------------------------------------------##
+    - name: admins
+      users:
+      - <user.name>
+      policies:
+      - '"arn:aws:iam::aws:policy/AdministratorAccess"'
+  security:
+    groups:
+    ##------------------------------------------------------------##
+    ## Available groups:
+    ## - admins:
+    ##   Default policies:
+    ##   - aws_iam_policy.assume_admin_role.arn
+    ## - auditors:
+    ##   Default policies:
+    ##   - aws_iam_policy.assume_auditor_role.arn
+    ## - devops:
+    ##   Default policies:
+    ##   - aws_iam_policy.assume_devops_role.arn
+    ## - deploymaster:
+    ##   Default policies:
+    ##   - aws_iam_policy.assume_deploymaster_role.arn
+    ##------------------------------------------------------------##
+    - name: devops
+      users:
+      - <user.name>
+      policies:
+      - aws_iam_policy.assume_devops_role.arn
+  shared:
+    networks:
+    - cidr_block: "172.18.0.0/20"
+      availability_zones: [a,b]
+      private_subnets:
+      - "172.18.0.0/23"
+      - "172.18.2.0/23"
+      public_subnets:
+      - "172.18.8.0/23"
+      - "172.18.10.0/23"
