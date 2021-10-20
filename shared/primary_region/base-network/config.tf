@@ -38,18 +38,3 @@ terraform {
 #     key     = "${var.environment}/vpn/terraform.tfstate"
 #   }
 # }
-
-# VPC apps remote states
-data "terraform_remote_state" "vpc-apps" {
-
-  for_each = local.data_vpcs
-
-  backend = "s3"
-
-  config = {
-    region  = lookup(each.value, "region")
-    profile = lookup(each.value, "profile")
-    bucket  = lookup(each.value, "bucket")
-    key     = lookup(each.value, "key")
-  }
-}
