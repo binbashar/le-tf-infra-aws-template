@@ -73,9 +73,11 @@ accounts:
     networks:
     - cidr_block: "172.18.0.0/20"
       availability_zones: [a,b]
+      private_subnets_cidr: "172.18.0.0/21"
       private_subnets:
       - "172.18.0.0/23"
       - "172.18.2.0/23"
+      public_subnets_cidr: "172.18.8.0/21"
       public_subnets:
       - "172.18.8.0/23"
       - "172.18.10.0/23"
