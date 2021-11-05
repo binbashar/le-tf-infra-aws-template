@@ -18,16 +18,26 @@ set -o nounset
 
 
 # ---------------------------
+# Formatting helpers
+# ---------------------------
+BOLD="\033[1m"
+DATE="\033[0;90m"
+ERROR="\033[41;37m"
+INFO="\033[0;34m"
+DEBUG="\033[0;32m"
+RESET="\033[0m"
+
+# ---------------------------
 # Helper Functions
 # ---------------------------
 
 # Simple logging functions
-function error { log "[ERROR] $1" 0; }
-function info { log "[INFO] $1" 1; }
-function debug { log "[DEBUG] $1" 2; }
+function error { log "${ERROR}ERROR${RESET}\t$1" 0; }
+function info { log "${INFO}INFO${RESET}\t$1" 1; }
+function debug { log "${DEBUG}DEBUG${RESET}\t$1" 2; }
 function log {
     if [[ $MFA_SCRIPT_LOG_LEVEL -gt "$2" ]]; then
-        echo -e "[$(date +"%m-%d-%y %H:%M:%S")] $1"
+        echo -e "${DATE}[$(date +"%H:%M:%S")]${RESET}   $1"
     fi
 }
 
@@ -71,13 +81,13 @@ TF_AWS_SHARED_CREDENTIALS_FILE=`printenv AWS_SHARED_CREDENTIALS_FILE`
 AWS_CACHE_DIR=`printenv AWS_CACHE_DIR || echo /tmp/cache`
 AWS_REGION="$(get_config $BACKEND_CONFIG_FILE region)"
 AWS_OUTPUT=json
-debug "BACKEND_CONFIG_FILE=$BACKEND_CONFIG_FILE"
-debug "SRC_AWS_CONFIG_FILE=$SRC_AWS_CONFIG_FILE"
-debug "SRC_AWS_SHARED_CREDENTIALS_FILE=$SRC_AWS_SHARED_CREDENTIALS_FILE"
-debug "TF_AWS_CONFIG_FILE=$TF_AWS_CONFIG_FILE"
-debug "TF_AWS_SHARED_CREDENTIALS_FILE=$TF_AWS_SHARED_CREDENTIALS_FILE"
-debug "AWS_REGION=$AWS_REGION"
-debug "AWS_OUTPUT=$AWS_OUTPUT"
+debug "${BOLD}BACKEND_CONFIG_FILE=${RESET}$BACKEND_CONFIG_FILE"
+debug "${BOLD}SRC_AWS_CONFIG_FILE=${RESET}$SRC_AWS_CONFIG_FILE"
+debug "${BOLD}SRC_AWS_SHARED_CREDENTIALS_FILE=${RESET}$SRC_AWS_SHARED_CREDENTIALS_FILE"
+debug "${BOLD}TF_AWS_CONFIG_FILE=${RESET}$TF_AWS_CONFIG_FILE"
+debug "${BOLD}TF_AWS_SHARED_CREDENTIALS_FILE=${RESET}$TF_AWS_SHARED_CREDENTIALS_FILE"
+debug "${BOLD}AWS_REGION=${RESET}$AWS_REGION"
+debug "${BOLD}AWS_OUTPUT=${RESET}$AWS_OUTPUT"
 
 
 # -----------------------------------------------------------------------------
@@ -131,26 +141,26 @@ if [[ "${#UNIQ_PROFILES[@]}" -eq 0 ]]; then
     error "Unable to find any profiles in config.tf"
     exit 100
 fi
-info "MFA: Found ${#UNIQ_PROFILES[@]} profile/s"
+info "${BOLD}MFA:${RESET} Found ${#UNIQ_PROFILES[@]} profile/s"
 
 
 # -----------------------------------------------------------------------------
 # 2. For each profile:
 # -----------------------------------------------------------------------------
 for i in "${UNIQ_PROFILES[@]}" ; do
-    info "MFA: Attempting to get temporary credentials for profile=$i"
+    info "${BOLD}MFA:${RESET} Attempting to get temporary credentials for profile ${BOLD}$i${RESET}"
 
     # -----------------------------------------------------------------------------
     # 2.1. Get the role, serial number and source profile from AWS config file
     # -----------------------------------------------------------------------------
     MFA_ROLE_ARN="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i role_arn)"
-    debug "MFA_ROLE_ARN=$MFA_ROLE_ARN"
+    debug "${BOLD}MFA_ROLE_ARN=${RESET}$MFA_ROLE_ARN"
     MFA_SERIAL_NUMBER="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i mfa_serial)"
-    debug "MFA_SERIAL_NUMBER=$MFA_SERIAL_NUMBER"
+    debug "${BOLD}MFA_SERIAL_NUMBER=${RESET}$MFA_SERIAL_NUMBER"
     MFA_PROFILE_NAME="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i source_profile)"
-    debug "MFA_PROFILE_NAME=$MFA_PROFILE_NAME"
+    debug "${BOLD}MFA_PROFILE_NAME=${RESET}$MFA_PROFILE_NAME"
     MFA_TOTP_KEY="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i totp_key)"
-    debug "MFA_TOTP_KEY=$MFA_TOTP_KEY"
+    debug "${BOLD}MFA_TOTP_KEY=${RESET}$MFA_TOTP_KEY"
     # Validate all required fields
     if [[ $MFA_ROLE_ARN == "" ]]; then error "Missing 'role_arn'" && exit 150; fi
     if [[ $MFA_SERIAL_NUMBER == "" ]]; then error "Missing 'mfa_serial'" && exit 151; fi
@@ -167,7 +177,7 @@ for i in "${UNIQ_PROFILES[@]}" ; do
     OTP_FAILED=true
     MFA_DURATION=3600
     TEMP_FILE="$AWS_CACHE_DIR/$i"
-    debug "TEMP_FILE=$TEMP_FILE"
+    debug "${BOLD}TEMP_FILE=${RESET}$TEMP_FILE"
 
     while [[ $OTP_FAILED == true && $RETRIES_COUNT -lt $MAX_RETRIES ]]; do
 
@@ -176,21 +186,21 @@ for i in "${UNIQ_PROFILES[@]}" ; do
         #       the current profile
         #
         if [[ -f "$TEMP_FILE" ]]; then
-            debug "Found cached credentials in TEMP_FILE=$TEMP_FILE"
+            debug "Found cached credentials in ${BOLD}$TEMP_FILE${RESET}"
 
             # Get expiration date/timestamp
             EXPIRATION_DATE=`cat $TEMP_FILE | jq .Credentials.Expiration | sed -e 's/"//g' | sed -e 's/T/ /' | sed -e 's/Z//'`
-            debug "EXPIRATION_DATE=$EXPIRATION_DATE"
+            debug "${BOLD}EXPIRATION_DATE=${RESET}$EXPIRATION_DATE"
             EXPIRATION_TS=`date -d "$EXPIRATION_DATE" +"%s" || date +"%s"`
-            debug "EXPIRATION_TS=$EXPIRATION_TS"
+            debug "${BOLD}EXPIRATION_TS=${RESET}$EXPIRATION_TS"
 
             # Compare current timestamp (plus a margin) with the expiration timestamp
             CURRENT_TS=`date +"%s"`
             CURRENT_TS_PLUS_MARGIN=`echo $(( $CURRENT_TS + (30 * 60) ))`
-            debug "CURRENT_TS=$CURRENT_TS"
-            debug "CURRENT_TS_PLUS_MARGIN=$CURRENT_TS_PLUS_MARGIN"
+            debug "${BOLD}CURRENT_TS=${RESET}$CURRENT_TS"
+            debug "${BOLD}CURRENT_TS_PLUS_MARGIN=${RESET}$CURRENT_TS_PLUS_MARGIN"
             if [[ CURRENT_TS_PLUS_MARGIN -lt $EXPIRATION_TS ]]; then
-                info "MFA: Using cached credentials"
+                info "${BOLD}MFA:${RESET} Using cached credentials"
 
                 # Pretend the OTP succeeded and exit the while loop
                 OTP_FAILED=false
@@ -200,16 +210,17 @@ for i in "${UNIQ_PROFILES[@]}" ; do
 
         # Let's see if can automatically generate the OTP
         if [[ $MFA_TOTP_KEY != "" ]]; then
-            debug "MFA_TOTP_KEY=$MFA_TOTP_KEY"
+            debug "${BOLD}MFA_TOTP_KEY=${RESET}$MFA_TOTP_KEY"
             MFA_TOKEN_CODE=`oathtool --totp -b $MFA_TOTP_KEY`
         else
             # If the MFA TOTP Key was not found, prompt the user for the MFA Token
+            echo -ne "${BOLD}MFA:${RESET} Please type in your OTP: "  
             MFA_TOKEN_CODE=```
-            read -p "MFA: Please type in your OTP: " TOKEN_CODE;
+            read TOKEN_CODE;
             echo $TOKEN_CODE
             ```
         fi
-        debug "MFA_TOKEN_CODE=$MFA_TOKEN_CODE"
+        debug "${BOLD}MFA_TOKEN_CODE=${RESET}$MFA_TOKEN_CODE"
 
         # -----------------------------------------------------------------------------
         # 2.3. Assume the role to generate the temporary credentials
@@ -229,7 +240,7 @@ for i in "${UNIQ_PROFILES[@]}" ; do
         2>&1
         ```
         set -e
-        debug "MFA_ASSUME_ROLE_OUTPUT=${MFA_ASSUME_ROLE_OUTPUT:0:20}"
+        debug "${BOLD}MFA_ASSUME_ROLE_OUTPUT=${RESET}${MFA_ASSUME_ROLE_OUTPUT:0:20}"
 
         # Check if STS call failed because of invalid token
         if [[ $MFA_ASSUME_ROLE_OUTPUT == *"invalid MFA"* ]]; then
@@ -240,9 +251,9 @@ for i in "${UNIQ_PROFILES[@]}" ; do
             echo "$MFA_ASSUME_ROLE_OUTPUT" > $TEMP_FILE
         fi
 
-        debug "OTP_FAILED=$OTP_FAILED"
+        debug "${BOLD}OTP_FAILED=${RESET}$OTP_FAILED"
         RETRIES_COUNT=$((RETRIES_COUNT+1))
-        debug "RETRIES_COUNT=$RETRIES_COUNT"
+        debug "${BOLD}RETRIES_COUNT=${RESET}$RETRIES_COUNT"
 
     done
 
@@ -260,9 +271,9 @@ for i in "${UNIQ_PROFILES[@]}" ; do
     AWS_ACCESS_KEY_ID=`cat $TEMP_FILE | jq .Credentials.AccessKeyId | sed -e 's/"//g'`
     AWS_SECRET_ACCESS_KEY=`cat $TEMP_FILE | jq .Credentials.SecretAccessKey | sed -e 's/"//g'`
     AWS_SESSION_TOKEN=`cat $TEMP_FILE | jq .Credentials.SessionToken | sed -e 's/"//g'`
-    debug "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:0:4}**************"
-    debug "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:0:4}**************"
-    debug "AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:0:4}**************"
+    debug "${BOLD}AWS_ACCESS_KEY_ID=${RESET}${AWS_ACCESS_KEY_ID:0:4}**************"
+    debug "${BOLD}AWS_SECRET_ACCESS_KEY=${RESET}${AWS_SECRET_ACCESS_KEY:0:4}**************"
+    debug "${BOLD}AWS_SESSION_TOKEN=${RESET}${AWS_SESSION_TOKEN:0:4}**************"
 
     # Create a profile block in the AWS credentials file using the credentials above
     REPLACE_CREDENTIALS=```
@@ -275,7 +286,7 @@ for i in "${UNIQ_PROFILES[@]}" ; do
     aws configure set output $AWS_OUTPUT
     ```
 
-    info "MFA: Credentials written succesfully!"
+    info "${BOLD}MFA:${RESET} Credentials written succesfully!"
 done
 
 # -----------------------------------------------------------------------------
