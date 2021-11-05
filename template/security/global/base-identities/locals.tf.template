@@ -1,0 +1,9 @@
+{%- from "le-resources/utils.jinja" import account_users_list -%}
+locals {
+  tags = {
+    Terraform   = "true"
+    Environment = var.environment
+  }
+
+  users = {{ account_users_list(accounts.security) }}
+}

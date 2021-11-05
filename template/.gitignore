@@ -13,7 +13,7 @@
 !/.chglog
 !/.gitallowed
 !/.github
-!*.gitkeep
+!**/.gitkeep
 !*.editorconfig
 !*.pre-commit-config.yaml
 
@@ -21,6 +21,8 @@
 ############
 id_rsa
 id_dsa
+**/keys/*
+!**/keys/.gitkeep
 
 # OS generated files #
 ######################
@@ -90,9 +92,9 @@ Thumbs.db
 *secrets.dec*
 *secrets.dec.*
 #
-# Scripts and Makefiles
+# Config Files
 #
-
+**common.tfvars
 #
 # Compiled files
 #
@@ -106,8 +108,3 @@ Thumbs.db
 *plan.json
 *state.json
 *plan.save
-#
-# Terratest
-#
-tests/vendor/
-tests/Gopkg.*
