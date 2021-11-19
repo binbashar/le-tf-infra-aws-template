@@ -106,6 +106,8 @@ fi
 
 # Ensure cache credentials dir exists
 mkdir -p $AWS_CACHE_DIR
+# Clear existing credentials
+rm -f $TF_AWS_CONFIG_FILE TF_AWS_SHARED_CREDENTIALS_FILE
 
 
 # -----------------------------------------------------------------------------
@@ -121,10 +123,14 @@ while IFS= read -r line ; do
     RAW_PROFILES+=(`echo $line | sed 's/ //g' | sed 's/[\"\$\{\}]//g'`)
 done <<< "$PARSED_PROFILES"
 
-PARSED_PROFILES=`grep -E "^\s+profile" locals.tf`
-while IFS= read -r line ; do
-    RAW_PROFILES+=(`echo $line | sed 's/ //g' | sed 's/[\"\$\{\}]//g'`)
-done <<< "$PARSED_PROFILES"
+# Some layers may also contain profiles in `locals.tf` but not all layers
+# have the file
+if [[ -f "locals.tf" ]]; then
+    PARSED_PROFILES=`grep -E "^\s+profile" locals.tf`
+    while IFS= read -r line ; do
+        RAW_PROFILES+=(`echo $line | sed 's/ //g' | sed 's/[\"\$\{\}]//g'`)
+    done <<< "$PARSED_PROFILES"
+fi
 
 # Now we need to replace any placeholders in the profiles
 PROFILES=()
