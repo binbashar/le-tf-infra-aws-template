@@ -11,15 +11,14 @@ region_primary  = "{{ primary_region | default("us-east-1") }}"
 region_secondary      = "{{ secondary_region | default("us-west-2") }}"
 
 # Account IDs
-{%- for account in organization.accounts %}
-{{ account.name }}_account_id = "{{ account.id | default("XXXXXXXXXXXX") }}"{% endfor %}
+{%- for account in organization.accounts %}{% if account.id is not none %}
+{{ account.name }}_account_id = "{{ account.id | default("XXXXXXXXXXXX") }}"{%endif%}{% endfor %}
 
 # Accounts
 accounts    = {
 {%- for account in organization.accounts %}
   {{ account.name }} = {
-      email = "{{ account.email }}",
-      {% if account.id -%}
+      email = "{{ account.email }}"{% if account.id -%},
       id = "{{ account.id }}"{% endif %}
   }{% endfor %}
 }
