@@ -11,8 +11,8 @@ region_primary  = "{{ primary_region | default("us-east-1") }}"
 region_secondary      = "{{ secondary_region | default("us-west-2") }}"
 
 # Account IDs
-{%- for account in organization.accounts %}{% if account.id is not none %}
-{{ account.name }}_account_id = "{{ account.id | default("XXXXXXXXXXXX") }}"{%endif%}{% endfor %}
+{%- for account in organization.accounts %}
+{{ account.name }}_account_id = "{% if account.id %}{{ account.id }}{% else %}XXXXXXXXXXXX{% endif %}"{% endfor %}
 
 # Accounts
 accounts    = {
@@ -22,3 +22,7 @@ accounts    = {
       id = "{{ account.id }}"{% endif %}
   }{% endfor %}
 }
+
+# Hashicorp Vault private API endpoint
+vault_address = "https://bb-le-shared-vault-cluster.private.vault.XXXXXX.aws.hashicorp.cloud:8200"
+vault_token = "s.XXXXXXXXXXXXXXXXXXXXXX.Apshc"
