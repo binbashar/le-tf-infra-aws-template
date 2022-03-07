@@ -26,3 +26,8 @@ accounts    = {
 # Hashicorp Vault private API endpoint
 vault_address = "https://bb-le-shared-vault-cluster.private.vault.XXXXXX.aws.hashicorp.cloud:8200"
 vault_token = "s.XXXXXXXXXXXXXXXXXXXXXX.Apshc"
+
+# AWS SSO
+sso_enabled   = false
+sso_start_url = "https://bbleverage.awsapps.com/start"
+sso_region    = "us-east-1"

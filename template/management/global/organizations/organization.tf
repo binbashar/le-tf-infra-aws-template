@@ -10,6 +10,7 @@ resource "aws_organizations_organization" "main" {
     "backup.amazonaws.com",
     "cloudtrail.amazonaws.com",
     "config.amazonaws.com",
+    "sso.amazonaws.com"
   ]
 
   # Enable all feature set to enable SCPs
@@ -26,15 +27,15 @@ resource "aws_organizations_organization" "main" {
 # Delegate administration of access analyzer to security account
 # 
 resource "aws_organizations_delegated_administrator" "access_analyzer_administrator" {
-    account_id = aws_organizations_account.accounts["security"].id
-    service_principal = "access-analyzer.amazonaws.com"
+  account_id        = aws_organizations_account.accounts["security"].id
+  service_principal = "access-analyzer.amazonaws.com"
 
-    depends_on = [
-        aws_organizations_organization.main,
-        aws_organizations_account.accounts["security"]
-    ]
+  depends_on = [
+    aws_organizations_organization.main,
+    aws_organizations_account.accounts["security"]
+  ]
 }
 
 resource "aws_iam_service_linked_role" "access_analyzer" {
-    aws_service_name = "access-analyzer.amazonaws.com"
+  aws_service_name = "access-analyzer.amazonaws.com"
 }
