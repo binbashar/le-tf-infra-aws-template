@@ -3,4 +3,7 @@
 #
 
 # Environment Name
-environment     = "management"
+environment = "management"
+
+# SSO
+sso_role = "Administrator"
