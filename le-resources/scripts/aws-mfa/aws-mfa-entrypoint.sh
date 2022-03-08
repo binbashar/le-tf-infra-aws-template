@@ -105,7 +105,7 @@ if [[ ! -f "$SRC_AWS_SHARED_CREDENTIALS_FILE" ]]; then
 fi
 
 # Ensure cache credentials dir exists
-mkdir -p $AWS_CACHE_DIR
+mkdir -p "$AWS_CACHE_DIR"
 
 
 # -----------------------------------------------------------------------------
@@ -113,24 +113,25 @@ mkdir -p $AWS_CACHE_DIR
 # -----------------------------------------------------------------------------
 
 # Parse all available profiles in config.tf
-set +e
 RAW_PROFILES=()
-#PARSED_PROFILES=`grep -E "^\s+profile" config.tf`
-PARSED_PROFILES=`grep -v "lookup" config.tf | grep -E "^\s+profile"`
-while IFS= read -r line ; do
-    RAW_PROFILES+=(`echo $line | sed 's/ //g' | sed 's/[\"\$\{\}]//g'`)
-done <<< "$PARSED_PROFILES"
+if [[ -f "config.tf" ]] && PARSED_PROFILES=$(grep -v "lookup" config.tf | grep -E "^\s+profile"); then
+    while IFS= read -r line ; do
+        RAW_PROFILES+=("$(echo "$line" | sed 's/ //g' | sed 's/[\"\$\{\}]//g')")
+    done <<< "$PARSED_PROFILES"
+fi
+# Some profiles may be found in local.tf also
+if [[ -f "locals.tf" ]] && PARSED_PROFILES=$(grep -E "^\s+profile" locals.tf); then
+    while IFS= read -r line ; do
+        RAW_PROFILES+=("$(echo "$line" | sed 's/ //g' | sed 's/[\"\$\{\}]//g')")
+    done <<< "$PARSED_PROFILES"
+fi
 
-PARSED_PROFILES=`grep -E "^\s+profile" locals.tf`
-while IFS= read -r line ; do
-    RAW_PROFILES+=(`echo $line | sed 's/ //g' | sed 's/[\"\$\{\}]//g'`)
-done <<< "$PARSED_PROFILES"
-
+set +e
 # Now we need to replace any placeholders in the profiles
+PROFILE_VALUE="$(get_config $BACKEND_CONFIG_FILE profile)"
+PROJECT_VALUE="$(get_config $COMMON_CONFIG_FILE project)"
 PROFILES=()
 for i in "${RAW_PROFILES[@]}" ; do
-    PROFILE_VALUE="$(get_config $BACKEND_CONFIG_FILE profile)"
-    PROJECT_VALUE="$(get_config $COMMON_CONFIG_FILE project)"
     TMP_PROFILE=`echo $i | sed "s/profile=//" | sed "s/var.profile/${PROFILE_VALUE}/" | sed "s/var.project/${PROJECT_VALUE}/"`
     PROFILES+=("$TMP_PROFILE")
 done
@@ -153,7 +154,17 @@ for i in "${UNIQ_PROFILES[@]}" ; do
     # -----------------------------------------------------------------------------
     # 2.1. Get the role, serial number and source profile from AWS config file
     # -----------------------------------------------------------------------------
-    MFA_ROLE_ARN="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i role_arn)"
+    if ! MFA_ROLE_ARN=$(AWS_CONFIG_FILE="$SRC_AWS_CONFIG_FILE" && \
+                        AWS_SHARED_CREDENTIALS_FILE="$SRC_AWS_SHARED_CREDENTIALS_FILE" && \
+                        aws configure get role_arn --profile "$i" 2>&1); then
+        error "$MFA_ROLE_ARN"
+        if [[ "$MFA_ROLE_ARN" == *"$i"* ]]; then
+            error "Credentials for profile $i have not been properly configured. Please check your configuration."
+        else
+            error "Missing 'role_arn'"
+        fi
+        exit 150
+    fi
     debug "${BOLD}MFA_ROLE_ARN=${RESET}$MFA_ROLE_ARN"
     MFA_SERIAL_NUMBER="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i mfa_serial)"
     debug "${BOLD}MFA_SERIAL_NUMBER=${RESET}$MFA_SERIAL_NUMBER"
@@ -162,7 +173,6 @@ for i in "${UNIQ_PROFILES[@]}" ; do
     MFA_TOTP_KEY="$(get_profile $SRC_AWS_CONFIG_FILE $SRC_AWS_SHARED_CREDENTIALS_FILE $i totp_key)"
     debug "${BOLD}MFA_TOTP_KEY=${RESET}$MFA_TOTP_KEY"
     # Validate all required fields
-    if [[ $MFA_ROLE_ARN == "" ]]; then error "Missing 'role_arn'" && exit 150; fi
     if [[ $MFA_SERIAL_NUMBER == "" ]]; then error "Missing 'mfa_serial'" && exit 151; fi
     if [[ $MFA_PROFILE_NAME == "" ]]; then error "Missing 'source_profile'" && exit 152; fi
 
@@ -185,11 +195,11 @@ for i in "${UNIQ_PROFILES[@]}" ; do
         # Check if cached credentials exist: look for a file that correspond to
         #       the current profile
         #
-        if [[ -f "$TEMP_FILE" ]]; then
+        if [[ -f "$TEMP_FILE" ]] && EXPIRATION_DATE=$(jq -r '.Credentials.Expiration' "$TEMP_FILE"); then
             debug "Found cached credentials in ${BOLD}$TEMP_FILE${RESET}"
 
             # Get expiration date/timestamp
-            EXPIRATION_DATE=`cat $TEMP_FILE | jq .Credentials.Expiration | sed -e 's/"//g' | sed -e 's/T/ /' | sed -e 's/Z//'`
+            EXPIRATION_DATE=$(echo "$EXPIRATION_DATE" | sed -e 's/T/ /' | sed -e 's/Z//')
             debug "${BOLD}EXPIRATION_DATE=${RESET}$EXPIRATION_DATE"
             EXPIRATION_TS=`date -d "$EXPIRATION_DATE" +"%s" || date +"%s"`
             debug "${BOLD}EXPIRATION_TS=${RESET}$EXPIRATION_TS"
@@ -226,31 +236,28 @@ for i in "${UNIQ_PROFILES[@]}" ; do
         # 2.3. Assume the role to generate the temporary credentials
         # -----------------------------------------------------------------------------
         MFA_ROLE_SESSION_NAME="$MFA_PROFILE_NAME-temp"
-        set +e
-        MFA_ASSUME_ROLE_OUTPUT=```
-        AWS_CONFIG_FILE=$SRC_AWS_CONFIG_FILE; \
-        AWS_SHARED_CREDENTIALS_FILE=$SRC_AWS_SHARED_CREDENTIALS_FILE; \
-        aws sts assume-role \
-        --role-arn $MFA_ROLE_ARN \
-        --serial-number $MFA_SERIAL_NUMBER \
-        --role-session-name $MFA_ROLE_SESSION_NAME \
-        --duration-seconds $MFA_DURATION \
-        --token-code $MFA_TOKEN_CODE \
-        --profile $MFA_PROFILE_NAME \
-        2>&1
-        ```
-        set -e
-        debug "${BOLD}MFA_ASSUME_ROLE_OUTPUT=${RESET}${MFA_ASSUME_ROLE_OUTPUT:0:20}"
-
-        # Check if STS call failed because of invalid token
-        if [[ $MFA_ASSUME_ROLE_OUTPUT == *"invalid MFA"* ]]; then
-            OTP_FAILED=true
-            info "Unable to get valid credentials. Let's try again..."
+        if ! MFA_ASSUME_ROLE_OUTPUT=$(AWS_CONFIG_FILE="$SRC_AWS_CONFIG_FILE" && \
+                                      AWS_SHARED_CREDENTIALS_FILE="$SRC_AWS_SHARED_CREDENTIALS_FILE" && \
+                                      aws sts assume-role \
+                                                --role-arn $MFA_ROLE_ARN \
+                                                --serial-number $MFA_SERIAL_NUMBER \
+                                                --role-session-name $MFA_ROLE_SESSION_NAME \
+                                                --duration-seconds $MFA_DURATION \
+                                                --token-code $MFA_TOKEN_CODE \
+                                                --profile $MFA_PROFILE_NAME 2>&1); then
+            # Check if STS call failed because of invalid token or user interruption
+            if [[ $MFA_ASSUME_ROLE_OUTPUT == *"invalid MFA"* ]]; then
+                OTP_FAILED=true
+                info "Unable to get valid credentials. Let's try again..."
+            elif [[ $MFA_ASSUME_ROLE_OUTPUT == *"aws: error: argument --token-code: expected one argument"* ]]; then
+                error "Aborted!"
+                exit 156
+            fi
         else
             OTP_FAILED=false
             echo "$MFA_ASSUME_ROLE_OUTPUT" > $TEMP_FILE
         fi
-
+        debug "${BOLD}MFA_ASSUME_ROLE_OUTPUT=${RESET}${MFA_ASSUME_ROLE_OUTPUT:0:20}"
         debug "${BOLD}OTP_FAILED=${RESET}$OTP_FAILED"
         RETRIES_COUNT=$((RETRIES_COUNT+1))
         debug "${BOLD}RETRIES_COUNT=${RESET}$RETRIES_COUNT"
