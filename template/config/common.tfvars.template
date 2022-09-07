@@ -30,4 +30,4 @@ vault_token = "s.XXXXXXXXXXXXXXXXXXXXXX.Apshc"
 # AWS SSO
 sso_enabled   = false
 sso_start_url = "https://bbleverage.awsapps.com/start"
-sso_region    = "us-east-1"
+sso_region    = "{{ primary_region | default("us-east-1") }}"
