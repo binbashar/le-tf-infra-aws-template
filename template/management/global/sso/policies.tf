@@ -1,14 +1,18 @@
+#------------------------------------------------------------------------------
+# DevOps
+#------------------------------------------------------------------------------
 data "aws_iam_policy_document" "devops" {
-
   statement {
     sid = "MultiServiceFullAccessCustom"
     actions = [
+      "access-analyzer:*",
       "acm:*",
       "athena:*",
       "autoscaling:*",
       "appconfig:*",
       "application-autoscaling:*",
       "apprunner:*",
+      "appsync:*",
       "apigateway:*",
       "aws-portal:*",
       "aws-marketplace:*",
@@ -29,6 +33,7 @@ data "aws_iam_policy_document" "devops" {
       "ecr-public:*",
       "ecs:*",
       "eks:*",
+      "elasticache:*",
       "elasticbeanstalk:*",
       "elasticloadbalancing:*",
       "es:*",
@@ -37,14 +42,19 @@ data "aws_iam_policy_document" "devops" {
       "guardduty:*",
       "health:*",
       "iam:*",
+      "inspector2:*",
+      "kafka:*",
       "kms:*",
       "lambda:*",
       "lightsail:*",
       "logs:*",
+      "network-firewall:*",
+      "networkmanager:*",
       "ram:*",
       "rds:*",
       "redshift:*",
       "resource-explorer:*",
+      "resource-explorer-2:*",
       "resource-groups:*",
       "route53:*",
       "route53domains:*",
@@ -72,8 +82,9 @@ data "aws_iam_policy_document" "devops" {
       test     = "StringEquals"
       variable = "aws:RequestedRegion"
       values = [
-        "us-east-1",
-        "us-west-2"
+        "${var.region}",
+        "${var.region_secondary}",
+        "us-east-1", # The original region is needed to have IAM working
       ]
     }
   }
@@ -95,7 +106,8 @@ data "aws_iam_policy_document" "devops" {
         "*.micro",
         "*.small",
         "*.medium",
-        "*.large"
+        "*.large",
+        "*.xlarge"
       ]
     }
   }
