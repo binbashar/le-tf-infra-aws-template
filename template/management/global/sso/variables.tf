@@ -70,6 +70,11 @@ variable "shared_account_id" {
   description = "Account: Shared Resources"
 }
 
+variable "accounts" {
+  type        = map(any)
+  description = "Accounts descriptions"
+}
+
 #=============================#
 # Hashicorp Vault Vars        #
 #=============================#

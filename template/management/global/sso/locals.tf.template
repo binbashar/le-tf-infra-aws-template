@@ -1,22 +1,9 @@
-# {%- from "le-resources/utils.jinja" import account_users_list -%}
+{%- from "le-resources/utils.jinja" import users_list -%}
 locals {
   #----------------------------------------------------------------------------
   # Define the users here
   #----------------------------------------------------------------------------
-  # users = {{ account_users_list(accounts.sso) }}
-
-  users = {
-    # Binbash
-    "john.doe" = {
-      first_name = "John"
-      last_name  = "Doe"
-      email      = "john.doe@example.com"
-      groups = [
-        "administrators",
-        "devops",
-      ]
-    }
-  }
+  users = {{ users_list(users) }}
 
   #----------------------------------------------------------------------------
   # Define the groups here

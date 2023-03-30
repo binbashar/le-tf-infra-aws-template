@@ -34,6 +34,26 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
 }
 {% endmacro %}
 
+{# Users list:
+    users (list): given a list of users, it renders them in the expected HCL format.
+#}
+{% macro users_list(users) -%}
+  {
+  {%- for user in users %}
+    "{{ user.first_name | lower }}.{{ user.last_name | lower }}" = {
+      first_name = "{{ user.first_name }}"
+      last_name  = "{{ user.last_name }}"
+      email      = "{{ user.email }}"
+      groups = [
+        {%- for group in user.groups %}
+        "{{ group }}",
+        {%- endfor %}
+      ]
+    }
+  {% endfor -%}
+  }
+{% endmacro %}
+
 {# Account users list:
     account (dict): config of the account for which all the users will be listed. Repeated users are purged.
 #}

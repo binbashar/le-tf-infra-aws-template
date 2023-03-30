@@ -40,48 +40,6 @@ module "account_assignments" {
       principal_name      = local.groups["devops"].name
       account             = var.accounts.shared.id
     },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.apps-devstg.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.apps-prd.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.datascience-devstg.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.datascience-prd.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.legacy.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["DevOps"].arn
-      permission_set_name = "DevOps"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["devops"].name
-      account             = var.accounts.installers.id
-    },
 
     # -------------------------------------------------------------------------
     # FinOps Permissions
@@ -111,20 +69,6 @@ module "account_assignments" {
       principal_name      = local.groups["securityauditor"].name
       account             = var.accounts.shared.id
     },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["SecurityAuditor"].arn
-      permission_set_name = "SecurityAuditor"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["securityauditor"].name
-      account             = var.accounts.apps-devstg.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["SecurityAuditor"].arn
-      permission_set_name = "SecurityAuditor"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["securityauditor"].name
-      account             = var.accounts.apps-prd.id
-    },
 
     # -------------------------------------------------------------------------
     # ReadOnly Permissions
@@ -135,20 +79,6 @@ module "account_assignments" {
       principal_type      = local.principal_type_group
       principal_name      = local.groups["readonly"].name
       account             = var.accounts.shared.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["ReadOnly"].arn
-      permission_set_name = "ReadOnly"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["readonly"].name
-      account             = var.accounts.apps-devstg.id
-    },
-    {
-      permission_set_arn  = module.permission_sets.permission_sets["ReadOnly"].arn
-      permission_set_name = "ReadOnly"
-      principal_type      = local.principal_type_group
-      principal_name      = local.groups["readonly"].name
-      account             = var.accounts.apps-prd.id
     },
 
   ]
