@@ -3,7 +3,7 @@
 # Groups
 #{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="security",
     group_name="admins",
     default_policies=[
@@ -12,7 +12,7 @@
   )
 }}{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="security",
     group_name="auditors",
     default_policies=[
@@ -21,7 +21,7 @@
   )
 }}{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="security",
     group_name="devops",
     default_policies=[
@@ -33,7 +33,7 @@
 # Machine users groups
 #{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="security",
     group_name="deploymaster",
     default_policies=[

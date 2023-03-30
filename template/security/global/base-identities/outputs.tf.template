@@ -2,4 +2,4 @@
 #
 # users.tf sensitive data output
 #
-{{ users_outputs(accounts.security) }}
+{{ users_outputs([]) }}
