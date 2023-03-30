@@ -16,8 +16,8 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
   source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v4.1.0"
   name   = "{{ group_name }}{% if account_name == 'management' %}_management_org{% endif %}"
 
-{%- set account = accounts.get(account_name, {}) %}
-{%- set groups = account.get("groups", []) %}
+{%- set account = accounts[account_name] | default({}) %}
+{%- set groups = account["groups"] | default([]) %}
 {%- set group = groups | selectattr("name", "equalto", group_name) | first | default({}) %}
 {%- set users = group.get("users", []) %}
 {%- set policies = group.get("policies", default_policies) %}
