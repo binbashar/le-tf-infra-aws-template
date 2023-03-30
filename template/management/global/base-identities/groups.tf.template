@@ -3,7 +3,7 @@
 # Groups
 #{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="management",
     group_name="admins",
     default_policies=[
@@ -12,7 +12,7 @@
   )
 }}{{
   iam_group_with_policies(
-    accounts=accounts,
+    accounts=[],
     account_name="management",
     group_name="finops",
     default_policies=[

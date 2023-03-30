@@ -5,5 +5,5 @@ locals {
     Environment = var.environment
   }
 
-  users = {{ account_users_list(accounts.management) }}
+  users = {{ account_users_list([]) }}
 }
