@@ -4,5 +4,5 @@ locals {
     Environment = var.environment
   }
 
-  users = {}
+  users = []
 }
