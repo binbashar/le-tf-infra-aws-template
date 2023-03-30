@@ -1,4 +1,4 @@
 {%- from "le-resources/utils.jinja" import users_outputs -%}
 #
 # users.tf sensitive data output
-#{{ users_outputs([]]) }}
+#{{ users_outputs([]) }}
