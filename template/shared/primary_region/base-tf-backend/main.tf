@@ -16,6 +16,7 @@ module "terraform_backend" {
   block_public_acls             = true
   block_public_policy           = true
   restrict_public_buckets       = true
+  ignore_public_acls            = true
   enable_server_side_encryption = var.encrypt
   enforce_ssl_requests          = true
 
@@ -27,7 +28,7 @@ module "terraform_backend" {
   tags = local.tags
 
   providers = {
-    aws.main_region      = aws.main_region
-    aws.secondary_region = aws.secondary_region
+    aws.primary   = aws.main_region
+    aws.secondary = aws.secondary_region
   }
 }
