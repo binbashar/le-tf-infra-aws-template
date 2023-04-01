@@ -2,18 +2,18 @@
 # AWS Provider Settings       #
 #=============================#
 provider "aws" {
-  region                  = var.region
-  profile                 = var.profile
+  region  = var.region
+  profile = var.profile
 }
 
 #=============================#
 # Backend Config (partial)    #
 #=============================#
 terraform {
-  required_version = ">= 0.14.11"
+  required_version = "~> 1.2"
 
   required_providers {
-    aws = "~> 3.27"
+    aws = "~> 4.0"
   }
 
   backend "s3" {

@@ -10,7 +10,7 @@ provider "aws" {
 # Backend Config (partial)    #
 #=============================#
 terraform {
-  required_version = ">= 1.2"
+  required_version = "~> 1.2"
 
   required_providers {
     aws = "~> 4.2"
@@ -22,6 +22,6 @@ terraform {
 }
 
 #------------------------------------------------------------------------------
-# Data Sources
+# Important: this data source will only work after SSO has been activated
 #------------------------------------------------------------------------------
 data "aws_ssoadmin_instances" "main" {}

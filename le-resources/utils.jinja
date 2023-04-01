@@ -13,7 +13,7 @@
 #}
 {%- macro iam_group_with_policies(accounts, account_name, group_name, default_policies) %}
 module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
-  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v4.1.0"
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v4.24.1"
   name   = "{{ group_name }}{% if account_name == 'management' %}_management_org{% endif %}"
 
 {%- set account = accounts[account_name] | default({}) %}
