@@ -45,9 +45,9 @@ organization:
 ##  - readonly
 ##---------------------------------------------------------------------------##
 users:
-- first_name: "User"
-  last_name: "Name"
-  email: "user.name@example.com"
+- first_name: <User>
+  last_name: <Name>
+  email: <user.name@example.com>
   groups:
   - administrators
   - devops
