@@ -13,10 +13,12 @@
 #}
 {%- macro iam_group_with_policies(accounts, account_name, group_name, default_policies) %}
 module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
-  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v4.1.0"
+  source = "github.com/binbashar/terraform-aws-iam.git//modules/iam-group-with-policies?ref=v4.24.1"
   name   = "{{ group_name }}{% if account_name == 'management' %}_management_org{% endif %}"
 
-{%- set group = accounts[account_name].groups | selectattr("name", "equalto", group_name) | first | default({}) %}
+{%- set account = accounts[account_name] | default({}) %}
+{%- set groups = account["groups"] | default([]) %}
+{%- set group = groups | selectattr("name", "equalto", group_name) | first | default({}) %}
 {%- set users = group.get("users", []) %}
 {%- set policies = group.get("policies", default_policies) %}
 
@@ -32,6 +34,26 @@ module "iam_group_{{ group_name | replace('-', '_') | replace('.', '_') }}" {
     {% endif %}
 {%- endfor %}] 
 }
+{% endmacro %}
+
+{# Users list:
+    users (list): given a list of users, it renders them in the expected HCL format.
+#}
+{% macro users_list(users) -%}
+  {
+  {%- for user in users %}
+    "{{ user.first_name | lower }}.{{ user.last_name | lower }}" = {
+      first_name = "{{ user.first_name }}"
+      last_name  = "{{ user.last_name }}"
+      email      = "{{ user.email }}"
+      groups = [
+        {%- for group in user.groups %}
+        "{{ group }}",
+        {%- endfor %}
+      ]
+    }
+  {% endfor -%}
+  }
 {% endmacro %}
 
 {# Account users list:

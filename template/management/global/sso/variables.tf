@@ -70,21 +70,7 @@ variable "shared_account_id" {
   description = "Account: Shared Resources"
 }
 
-#=============================#
-# Hashicorp Vault Vars        #
-#=============================#
-variable "vault_address" {
-  type        = string
-  description = "Hashicorp vault api endpoint address"
-}
-
-variable "vault_token" {
-  type        = string
-  description = "Hashicorp vault admin token"
-}
-
-variable "enable_tgw" {
-  description = "Enable Transit Gateway Support"
-  type        = bool
-  default     = false
+variable "accounts" {
+  type        = map(any)
+  description = "Accounts descriptions"
 }

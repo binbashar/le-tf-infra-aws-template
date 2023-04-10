@@ -1,9 +1,12 @@
 project_name: <project name>
-short_name: <short project name> # Two-letter-long abridged version of the project name
+short_name: <short project name> # A short version of the project name (from 2 to 4 letters long)
 
 primary_region: us-east-1
 secondary_region: us-west-2
 
+##---------------------------------------------------------------------------##
+## Define the accounts and organizational units of your AWS organization.
+##---------------------------------------------------------------------------##
 organization:
   accounts:
   - name: management
@@ -29,46 +32,27 @@ organization:
     accounts:
     - shared
 
+##---------------------------------------------------------------------------##
+## Define the initial users accounts and their groups.
+##---------------------------------------------------------------------------##
+## Fields `first_name`, `last_name`, and `email` are mandatory.
+##
+## Available groups are:
+##  - administrators
+##  - devops
+##  - finops
+##  - securityauditor
+##  - readonly
+##---------------------------------------------------------------------------##
+users:
+- first_name: <User>
+  last_name: <Name>
+  email: <user.name@example.com>
+  groups:
+  - administrators
+  - devops
+
 accounts:
-  management:
-    groups:
-    ##------------------------------------------------------------##
-    ## Available groups:
-    ## - admins:
-    ##   Default policies:
-    ##   - "arn:aws:iam::aws:policy/AdministratorAccess"
-    ## - finops:
-    ##   Default policies:
-    ##   - "arn:aws:iam::aws:policy/job-function/Billing"
-    ##   - "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
-    ##------------------------------------------------------------##
-    - name: admins
-      users:
-      - <user.name>
-      policies:
-      - '"arn:aws:iam::aws:policy/AdministratorAccess"'
-  security:
-    groups:
-    ##------------------------------------------------------------##
-    ## Available groups:
-    ## - admins:
-    ##   Default policies:
-    ##   - aws_iam_policy.assume_admin_role.arn
-    ## - auditors:
-    ##   Default policies:
-    ##   - aws_iam_policy.assume_auditor_role.arn
-    ## - devops:
-    ##   Default policies:
-    ##   - aws_iam_policy.assume_devops_role.arn
-    ## - deploymaster:
-    ##   Default policies:
-    ##   - aws_iam_policy.assume_deploymaster_role.arn
-    ##------------------------------------------------------------##
-    - name: devops
-      users:
-      - <user.name>
-      policies:
-      - aws_iam_policy.assume_devops_role.arn
   shared:
     networks:
     - cidr_block: "172.18.0.0/20"

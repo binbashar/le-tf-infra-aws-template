@@ -2,21 +2,26 @@
 # AWS Provider Settings       #
 #=============================#
 provider "aws" {
-  region                  = var.region
-  profile                 = var.profile
+  region  = var.region
+  profile = var.profile
 }
 
 #=============================#
 # Backend Config (partial)    #
 #=============================#
 terraform {
-  required_version = ">= 1.0.9"
+  required_version = "~> 1.2"
 
   required_providers {
-    aws = "~> 3.27"
+    aws = "~> 4.2"
   }
 
   backend "s3" {
     key = "management/sso/terraform.tfstate"
   }
 }
+
+#------------------------------------------------------------------------------
+# Important: this data source will only work after SSO has been activated
+#------------------------------------------------------------------------------
+data "aws_ssoadmin_instances" "main" {}
