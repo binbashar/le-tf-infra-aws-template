@@ -160,17 +160,17 @@ variable "enable_kms_endpoint_private_dns" {
 variable "manage_default_network_acl" {
   description = "Manage default Network ACL"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "public_dedicated_network_acl" {
   description = "Manage default Network ACL"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "private_dedicated_network_acl" {
   description = "Manage default Network ACL"
   type        = bool
-  default     = true
+  default     = false
 }
