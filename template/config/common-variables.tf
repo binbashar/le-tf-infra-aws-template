@@ -81,6 +81,21 @@ variable "vault_token" {
   description = "Vault Token"
 }
 
+variable "management_account_id" {
+  type        = string
+  description = "Account: Management"
+}
+
+variable "security_account_id" {
+  type        = string
+  description = "Account: Security & Users Management"
+}
+
+variable "shared_account_id" {
+  type        = string
+  description = "Account: Shared Resources"
+}
+
 #=============================#
 # AWS SSO  Variables          #
 #=============================#
