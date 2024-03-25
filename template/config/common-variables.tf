@@ -38,9 +38,7 @@ variable "encrypt" {
   description = "Enable AWS DynamoDB with server side encryption"
 }
 
-#
-# config/base.config
-#
+
 #=============================#
 # Project Variables           #
 #=============================#
@@ -59,9 +57,7 @@ variable "environment" {
   description = "Environment Name"
 }
 
-#
-# config/extra.config
-#
+
 #=============================#
 # Accounts & Extra Vars       #
 #=============================#
