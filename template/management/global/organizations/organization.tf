@@ -4,13 +4,17 @@
 resource "aws_organizations_organization" "main" {
   # Not needed at first, might be needed later: https://docs.aws.amazon.com/organizations/latest/APIReference/API_EnableAWSServiceAccess.html
   aws_service_access_principals = [
+    "malware-protection.guardduty.amazonaws.com",
     "guardduty.amazonaws.com",
     "access-analyzer.amazonaws.com",
     "aws-artifact-account-sync.amazonaws.com",
     "backup.amazonaws.com",
     "cloudtrail.amazonaws.com",
     "config.amazonaws.com",
-    "sso.amazonaws.com"
+    "ram.amazonaws.com",
+    "sso.amazonaws.com",
+    "fms.amazonaws.com",
+    "inspector2.amazonaws.com",
   ]
 
   # Enable all feature set to enable SCPs
@@ -25,7 +29,7 @@ resource "aws_organizations_organization" "main" {
 
 #
 # Delegate administration of access analyzer to security account
-# 
+#
 resource "aws_organizations_delegated_administrator" "access_analyzer_administrator" {
   account_id        = aws_organizations_account.accounts["security"].id
   service_principal = "access-analyzer.amazonaws.com"

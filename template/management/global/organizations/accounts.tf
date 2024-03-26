@@ -1,6 +1,9 @@
 #
 # Organization accounts
 #
+# Root account of the organization: mainly used for consolidated billing reports
+# but it could also be used to manage the SCPs of the OUs and accounts.
+#
 # Uncomment after first `apply`
 #resource "aws_organizations_account" "management" {
 #  name  = "${var.project_long}-management"
