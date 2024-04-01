@@ -11,5 +11,5 @@
 variable "sns_topic_name_monitoring_sec" {
   description = ""
   default     = "sns-topic-slack-notify-monitoring-sec"
-
+}
 
