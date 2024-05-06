@@ -27,6 +27,7 @@ module "terraform_backend" {
   
   notifications_sns             = false
   bucket_lifecycle_enabled      = false
+  billing_mode                  = "PROVISIONED"
   enable_point_in_time_recovery = false
   create_kms_key                = false # USE SSE-S3
 
