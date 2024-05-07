@@ -6,10 +6,10 @@
 # Leverage Terraform Infrastructure Template (le-tf-infra-aws-template)
 
 ## Overview
-This repository contains the Terraform configuration template files used by Leverage CLI during proyect creation.
+This repository contains the Terraform configuration template files used by [Leverage CLI](https://pypi.org/project/leverage) during project creation.
 
 
 ## Documentation
-For more information check out the [Binbash Leverage Official Documentation](https://leverage.binbash.co/concepts/.
+For more information check out the [binbash Leverage Reference Architecture Official Documentation](https://leverage.binbash.co/concepts/.)
 
 ---
