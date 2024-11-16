@@ -1,0 +1,97 @@
+name: Synchronize Module Versions
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+jobs:
+    clone_repositories:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                path: le-tf-infra-aws-template
+            - name: Checkout le-tf-infra-aws repo 
+              uses: actions/checkout@v4
+              with:
+                repository: "binbashar/le-tf-infra-aws"
+                path: le-tf-infra-aws
+            - name: Upload Workspace
+              uses: actions/upload-artifact@v4
+              with:
+                path: ${{ github.workspace }}
+                name: template-${{ github.run_id }}
+                include-hidden-files: true
+    management_layer:
+        runs-on: ubuntu-latest
+        needs: clone_repositories
+        strategy:
+          matrix:
+            modules: [
+                      ["management/global/sso/account_assignments.tf", "management/global/sso/account_assignments.tf"],
+                      ["management/us-east-1/base-tf-backend/main.tf", "management/primary_region/base-tf-backend/main.tf"]
+                     ] 
+        steps:
+            - name: Download Workspace
+              uses: actions/download-artifact@v4 
+              with:
+                name: template-${{ github.run_id }}
+            - name: list files
+              run: |
+                pwd
+                ls -la
+            - name: Sync modules
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/${{ matrix.modules[0] }} template/${{ matrix.modules[1] }}
+            - name: Generate Artifact Name
+              id: artifact_name
+              run: |
+                ARTIFACT=$(echo ${{ matrix.modules[1] }} | sed 's/\//_/g')
+                echo "ARTIFACT=$ARTIFACT" >> $GITHUB_OUTPUT
+            - name: Upload Workspace
+              uses: actions/upload-artifact@v4
+              with:
+                path: ${{ github.workspace }}
+                name: pull-request-${{ steps.artifact_name.outputs.ARTIFACT }}
+                include-hidden-files: true
+    pull_request:
+        runs-on: ubuntu-latest
+        needs: management_layer
+        steps:
+            - name: Download Workspace
+              uses: actions/download-artifact@v4
+              with:
+                path: ${{ github.workspace }}
+                pattern: pull-request-*
+                merge-multiple: true
+            - name: list files
+              run: |
+                pwd
+                ls -la
+            - name: Git status
+              run: |
+                cd le-tf-infra-aws-template
+                ls -lha
+            #- name: Create PR
+            #  uses: peter-evans/create-pull-request@v7
+            #  with:
+            #    path: le-tf-infra-aws-template
+            #    commit-message: "Sync ${{ matrix.modules[1] }} module"
+            #    title: "Sync Management Layer modules"
+            #    body: |
+            #      ## What?
+            #      * Syncronize the management layer terraform modules versions with the le-tf-infra-aws repository.
+            #      
+            #      ## Why?
+            #      * To keep the management layer modules up to date with the le-tf-infra-aws repository.
+            #      
+            #      ## References
+            #      * [le-tf-infra-aws]()
+            #    branch: "sync-management-layer-modules"
+            #    branch-suffix: timestamp
+            #    base: "master"
+            #    labels: |
+            #      enhancement
+            #      patch
