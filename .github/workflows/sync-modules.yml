@@ -78,8 +78,9 @@ jobs:
             - name: Create PR
               uses: peter-evans/create-pull-request@v7
               with:
-                commit-message: "Sync ${{ matrix.modules[1] }} module"
+                commit-message: "Sync module"
                 title: "Sync Management Layer modules"
+                path: le-tf-infra-aws-template
                 body: |
                   ## What?
                   * Syncronize the management layer terraform modules versions with the le-tf-infra-aws repository.
