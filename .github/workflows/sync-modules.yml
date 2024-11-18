@@ -93,7 +93,7 @@ jobs:
                   * [le-tf-infra-aws]()
                 branch: "sync-management-layer-modules"
                 branch-suffix: timestamp
-                base: "master"
+                base: ${{ github.head_ref }}
                 labels: |
                   enhancement
                   patch
