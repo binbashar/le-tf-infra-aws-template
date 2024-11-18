@@ -74,6 +74,7 @@ jobs:
               run: |
                 cd le-tf-infra-aws-template
                 ls -lha
+                git status
             #- name: Create PR
             #  uses: peter-evans/create-pull-request@v7
             #  with:
