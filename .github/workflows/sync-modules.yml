@@ -75,24 +75,23 @@ jobs:
                 cd le-tf-infra-aws-template
                 ls -lha
                 git status
-            #- name: Create PR
-            #  uses: peter-evans/create-pull-request@v7
-            #  with:
-            #    path: le-tf-infra-aws-template
-            #    commit-message: "Sync ${{ matrix.modules[1] }} module"
-            #    title: "Sync Management Layer modules"
-            #    body: |
-            #      ## What?
-            #      * Syncronize the management layer terraform modules versions with the le-tf-infra-aws repository.
-            #      
-            #      ## Why?
-            #      * To keep the management layer modules up to date with the le-tf-infra-aws repository.
-            #      
-            #      ## References
-            #      * [le-tf-infra-aws]()
-            #    branch: "sync-management-layer-modules"
-            #    branch-suffix: timestamp
-            #    base: "master"
-            #    labels: |
-            #      enhancement
-            #      patch
+            - name: Create PR
+              uses: peter-evans/create-pull-request@v7
+              with:
+                commit-message: "Sync ${{ matrix.modules[1] }} module"
+                title: "Sync Management Layer modules"
+                body: |
+                  ## What?
+                  * Syncronize the management layer terraform modules versions with the le-tf-infra-aws repository.
+                  
+                  ## Why?
+                  * To keep the management layer modules up to date with the le-tf-infra-aws repository.
+                  
+                  ## References
+                  * [le-tf-infra-aws]()
+                branch: "sync-management-layer-modules"
+                branch-suffix: timestamp
+                base: "master"
+                labels: |
+                  enhancement
+                  patch
