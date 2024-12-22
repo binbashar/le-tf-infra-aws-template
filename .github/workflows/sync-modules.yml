@@ -1,0 +1,83 @@
+name: Synchronize Module Versions
+on:
+  # schedule every sunday at 00:00
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+env:
+  SSO_MODULE: "management/global/sso/account_assignments.tf"
+  BACKEND_MODULE: "base-tf-backend/main.tf"
+  SECURITY_BASE_MODULE: "security-base/account.tf"
+  BASE_NETWORK_MODULE: "base-network/network.tf"
+  BASE_NETWORK_FLOW_MODULE_REFARCH: "base-network/vpc_flow_logs.tf"
+  BASE_NETWORK_FLOW_MODULE: "base-network/network_vpc_flow_logs.tf"
+jobs:
+    synchronize_modules: 
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                path: le-tf-infra-aws-template
+            - name: Checkout le-tf-infra-aws repo 
+              uses: actions/checkout@v4
+              with:
+                repository: "binbashar/le-tf-infra-aws"
+                path: le-tf-infra-aws
+            - name: SSO Module on Management account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/$SSO_MODULE template/$SSO_MODULE 
+            - name: Backend Module on Management account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/management/us-east-1/$BACKEND_MODULE template/management/primary_region/$BACKEND_MODULE
+            - name: Backend Module on Security account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/security/us-east-1/$BACKEND_MODULE template/security/primary_region/$BACKEND_MODULE
+            - name: Backend Module on Shared account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/shared/us-east-1/$BACKEND_MODULE template/shared/primary_region/$BACKEND_MODULE
+            - name: Security Base Module on Security account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/security/us-east-1/$SECURITY_BASE_MODULE template/security/primary_region/$SECURITY_BASE_MODULE
+            - name: Base Network Module on Shared account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/shared/us-east-1/$BASE_NETWORK_MODULE template/shared/primary_region/$BASE_NETWORK_MODULE
+            - name: Base Network Flow Module on Shared account
+              run: |
+                cd le-tf-infra-aws-template
+                chmod +x sync_modules.sh
+                ./sync_modules.sh ../le-tf-infra-aws/shared/us-east-1/$BASE_NETWORK_FLOW_MODULE_REFARCH template/shared/primary_region/$BASE_NETWORK_FLOW_MODULE
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v7
+              with:
+                commit-message: "chore(deps): Synchonize module versions with le-tf-infra-aws repository"
+                title: "chore(deps): Synchonize module versions with le-tf-infra-aws repository"
+                path: le-tf-infra-aws-template
+                body: |
+                  ## What?
+                  * Syncronize terraform modules versions with the le-tf-infra-aws repository.
+                  
+                  ## Why?
+                  * To keep terraform modules versions up to date with the le-tf-infra-aws repository.
+                  
+                  ## References
+                  * [le-tf-infra-aws](https://github.com/binbashar/le-tf-infra-aws)
+                  * [documentation](https://binbash.atlassian.net/wiki/spaces/BDPS/pages/2710077441/Synchronizing+Terraform+Module+Versions+Templates+with+Ref+Arch)
+                branch: "sync-modules"
+                branch-suffix: timestamp
+                base: master
+                labels: |
+                  enhancement
+                  patch
