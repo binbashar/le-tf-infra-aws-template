@@ -71,16 +71,6 @@ variable "accounts" {
   description = "Accounts descriptions"
 }
 
-variable "vault_address" {
-  type        = string
-  description = "Vault Address"
-}
-
-variable "vault_token" {
-  type        = string
-  description = "Vault Token"
-}
-
 variable "management_account_id" {
   type        = string
   description = "Account: Management"
