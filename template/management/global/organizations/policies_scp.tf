@@ -183,7 +183,7 @@ resource "aws_organizations_policy" "tag_protection" {
       "Condition": {
         "StringNotEquals": {
           "aws:PrincipalArn": [
-            "arn:aws:iam::${aws_organizations_account.accounts["shared"].id}:role/DevOps",
+            "arn:aws:iam::${aws_organizations_account.accounts["shared"].id}:role/DevOps"
           ]
         },
         "ForAnyValue:StringEquals": {
