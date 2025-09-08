@@ -2,7 +2,7 @@
 # Network Resources
 #
 module "vpc" {
-  source = "github.com/binbashar/terraform-aws-vpc.git?ref=v3.18.1"
+  source = "github.com/binbashar/terraform-aws-vpc.git?ref=v3.19.0"
 
   name = local.vpc_name
   cidr = local.vpc_cidr_block
